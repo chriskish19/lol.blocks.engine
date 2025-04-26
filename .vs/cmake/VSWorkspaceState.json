@@ -1,8 +1,0 @@
-{
-  "OutputFoldersPerTargetSystem": {
-    "Local Machine": [
-      "cmake\\out\\build\\x64-Debug",
-      "cmake\\out\\install\\x64-Debug"
-    ]
-  }
-}
