@@ -12,7 +12,18 @@ int WINAPI wWinMain(
 	_In_ LPWSTR lpCmdLine,
 	_In_ int nShowCmd
 ) {
-	core::standard_window* test_window = new core::standard_window;
+	core::standard_window* window = new core::standard_window;
+	{
+		core::codes code = window->load();
+		if (code != core::codes::success) {
+			if (window != nullptr) {
+				delete window;
+				window = nullptr;
+			}
+			return static_cast<int>(code);
+		}
+	}
+
 
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
@@ -26,6 +37,11 @@ int WINAPI wWinMain(
 		{
 			// render here
 		}
+	}
+
+	if (window != nullptr) {
+		delete window;
+		window = nullptr;
 	}
 
 	return static_cast<int>(msg.wParam);

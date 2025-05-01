@@ -14,3 +14,6 @@
 #define CODE_DESC_INCLUDE_PATH				desc_hpp						// (code description) has error code descriptions as strings
 #define CORE_WINDOW_INCLUDE_PATH			c_window_hpp					// win32 window class
 #define CODES_INCLUDE_PATH					codes_hpp						// error codes
+#define CORE_FUNCTIONS_INCLUDE_PATH			c_funcs_hpp						// helper functions
+#define CODE_OBJECT_INCLUDE_PATH			object_hpp						// throwable error object 
+#define ERROR_UTILS_INCLUDE_PATH			eu_hpp							// error utilities helper functions

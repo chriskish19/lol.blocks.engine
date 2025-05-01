@@ -1,7 +1,7 @@
 /***************************************
 *  File: types.hpp
 *
-*  Purpose: handle unicode within namespaces
+*  Purpose: handle settings
 *
 *
 * *************************************/
@@ -24,11 +24,12 @@
 // read only string, prepends L""
 #define ROS(x) L##x
 
-namespace core {
+namespace logger {
 	using string = std::wstring;
 	using character = wchar_t;
 	using character_p = character*;
 	using const_character_p = const character*;
+	namespace fs = std::filesystem;
 }
 
 #else
@@ -36,10 +37,17 @@ namespace core {
 #define ROS(x) x
 #define NARROW 1
 
-namespace core {
+namespace logger {
 	using string = std::string;
 	using character = char;
 }
 
 
+#endif
+
+
+#ifdef LOGS_EXPORTS
+#define LOGS_API __declspec(dllexport)
+#else
+#define LOGS_API __declspec(dllimport)
 #endif

@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.18)
 set(engine "lol.blocks.engine")
 set(core "lol.blocks.core")
 set(gui "lol.blocks.gui")
+set(logs "lol.blocks.logger")
 
 # create the main project
 project(${core})
@@ -137,10 +138,48 @@ target_link_libraries(${gui}
     advapi32
 )
 
+# logger is linked lib (dll)
+# get logger source and headers
+file(GLOB_RECURSE logger_sf "../projects/logger/*.cpp")
+file(GLOB_RECURSE logger_hf "../projects/logger/*.hpp")
 
+# build logger dll lib
+add_library(${logs} SHARED ${logger_sf} ${logger_hf})
+
+# linker settings
+target_compile_definitions(${logs} PRIVATE -DLOGS_EXPORTS)
+
+# logger header file names
+# creates macros for each hpp file include path
+# very handy for name changes and file moves
+foreach(HEADER_FILE ${logger_hf})
+    get_filename_component(FILE_NAME ${HEADER_FILE} NAME_WE)
+    set(FILE_NAME_HPP "${FILE_NAME}_hpp")
+    set(HEADER_FILE_PATH "\"${HEADER_FILE}\"")
+    target_compile_definitions(${logs} PRIVATE -D${FILE_NAME_HPP}=${HEADER_FILE_PATH})
+    
+    # for file name changes in the project
+    # their is a file called names.hpp that manages all file name changes in the project
+    if(${FILE_NAME} STREQUAL "names")
+        target_compile_definitions(${logs} PRIVATE -DNAMES_INCLUDE=${FILE_NAME_HPP})
+    endif()
+endforeach()
+
+# Link Win32 libraries to gui
+target_link_libraries(${logs}
+    PRIVATE
+    user32
+    gdi32
+    shell32
+    ole32
+    oleaut32
+    uuid
+    comdlg32
+    advapi32
+)
 
 # link libs to core
-target_link_libraries(${core} PUBLIC ${gui} ${engine})
+target_link_libraries(${core} PUBLIC ${gui} ${engine} ${logs})
 target_include_directories(${core} PRIVATE "../projects/engine/include" "../projects/gui/include")
 
 
