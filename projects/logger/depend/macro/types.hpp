@@ -16,6 +16,7 @@
 
 #define MAX_STRING 512
 
+
 #if defined(UNICODE) || defined(_UNICODE)
 
 // macro for handling wide strings 
