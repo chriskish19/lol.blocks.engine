@@ -11,6 +11,7 @@
 #include DEPENDS_INCLUDE_PATH
 #include CODES_INCLUDE_PATH
 #include BASE_INCLUDE_PATH
+#include CO_INCLUDE_PATH
 
 
 namespace logger {
@@ -51,7 +52,7 @@ namespace logger {
 		HWND m_handle = nullptr;
 
 		// class member function window procedure
-		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+		virtual LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 
 		window_description m_wd = {
@@ -84,5 +85,31 @@ namespace logger {
 		   ROS("LogWindow"),
 		   ExtractIcon(GetModuleHandle(NULL), ROS("shell32.dll"), 15)
 		};
+	};
+
+
+
+	// uses direct x to print the logs inside the window
+	class LOGS_API dx_log_window : public logger::window {
+	public:
+		dx_log_window() = default;
+
+		HWND handle() { return m_handle; }
+		UINT width();
+		UINT height();
+	protected:
+		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
+	};
+
+
+
+
+	// uses win32 api and classic window logging
+	class LOGS_API w32_log_window : public logger::window {
+	public:
+		w32_log_window() = default;
+
+	protected:
+		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 	};
 }

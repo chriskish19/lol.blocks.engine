@@ -21,3 +21,4 @@
 // error
 #define CODES_INCLUDE_PATH					codes_hpp						// error codes
 #define DESC_INCLUDE_PATH					desc_hpp						// description of error codes
+#define CO_INCLUDE_PATH						co_hpp							// code object

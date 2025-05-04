@@ -108,3 +108,30 @@ LRESULT logger::window::this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
     // no default switches needed
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
+
+UINT logger::dx_log_window::width()
+{
+    RECT rc = {};
+    if (GetClientRect(m_handle, &rc) == FALSE) {
+        throw le(codes::get_client_rect_fail, get_client_rect_fail_description);
+    }
+    return rc.bottom - rc.top;
+}
+
+UINT logger::dx_log_window::height()
+{
+    RECT rc = {};
+    if (GetClientRect(m_handle, &rc) == FALSE) {
+        throw le(codes::get_client_rect_fail, get_client_rect_fail_description);
+    }
+    return rc.right - rc.left;
+}
+
+LRESULT logger::dx_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg) {
+
+    }
+
+    return logger::window::this_window_proc(hwnd, uMsg, wParam, lParam);
+}

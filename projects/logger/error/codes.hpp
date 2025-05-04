@@ -15,5 +15,7 @@ namespace logger {
 		uninitialized,
 		register_class_fail,
 		hwnd_error,
+		to_wide_string_failed,
+		get_client_rect_fail
 	};
 }
