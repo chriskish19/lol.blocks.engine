@@ -46,45 +46,24 @@ namespace logger {
 		static LRESULT CALLBACK s_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 		// initialize the window
-		codes load();
+		virtual codes load();
 	protected:
+		// module handle
+		HINSTANCE m_module = GetModuleHandle(NULL);
+
 		// window handle
 		HWND m_handle = nullptr;
 
 		// class member function window procedure
 		virtual LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+		// see above for definition
+		// init in load()
+		window_description m_wd;
 
-		window_description m_wd = {
-			NULL,
-			ROS("LogWindow"),
-			ROS("System Log"),
-			WS_OVERLAPPEDWINDOW,
-			CW_USEDEFAULT,
-			CW_USEDEFAULT,
-			CW_USEDEFAULT,
-			CW_USEDEFAULT,
-			NULL,
-			NULL,
-			GetModuleHandle(NULL),
-			this
-		};
-
-
-		WNDCLASSEX m_wc = {
-		   sizeof(WNDCLASSEX),
-		   CS_HREDRAW | CS_VREDRAW,
-		   s_window_proc,
-		   0,
-		   0,
-		   GetModuleHandle(NULL),
-		   ExtractIcon(GetModuleHandle(NULL), ROS("shell32.dll"), 15),
-		   LoadCursor(nullptr, IDC_ARROW),
-		   reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1),
-		   nullptr,
-		   ROS("LogWindow"),
-		   ExtractIcon(GetModuleHandle(NULL), ROS("shell32.dll"), 15)
-		};
+		// window class
+		// init in load()
+		WNDCLASSEX m_wc;
 	};
 
 
@@ -102,12 +81,10 @@ namespace logger {
 	};
 
 
-
-
 	// uses win32 api and classic window logging
-	class LOGS_API w32_log_window : public logger::window {
+	class LOGS_API classic_log_window : public logger::window {
 	public:
-		w32_log_window() = default;
+		classic_log_window() = default;
 
 	protected:
 		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;

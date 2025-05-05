@@ -17,6 +17,7 @@
 #define FILE_INCLUDE_PATH					file_hpp						// logs to a file
 #define WINDOW_LOGGER_INCLUDE_PATH			wl_hpp							// window logger terminal
 #define BASE_INCLUDE_PATH					base_hpp						// base logger
+#define SCROLL_INCLUDE_PATH					scroll_hpp						// scrolling in a window
 
 // error
 #define CODES_INCLUDE_PATH					codes_hpp						// error codes

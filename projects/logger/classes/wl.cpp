@@ -1,4 +1,4 @@
-#include "wl.hpp"
+
 #include NAMES_INCLUDE
 #include WINDOW_LOGGER_INCLUDE_PATH
 
@@ -78,6 +78,43 @@ LRESULT logger::window::s_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
 
 logger::codes logger::window::load()
 {
+    if (m_module == nullptr) {
+        return codes::module_handle_error;
+    }
+    
+    
+    m_wd = window_description{
+            NULL,
+            ROS("LogWindow"),
+            ROS("System Log"),
+            WS_OVERLAPPEDWINDOW | WS_VSCROLL | WS_HSCROLL,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            NULL,
+            NULL,
+            m_module,
+            this
+    };
+
+
+    m_wc = WNDCLASSEX{
+       sizeof(WNDCLASSEX),
+       CS_HREDRAW | CS_VREDRAW,
+       s_window_proc,
+       0,
+       0,
+       GetModuleHandle(NULL),
+       ExtractIcon(m_module, ROS("shell32.dll"), 15),
+       LoadCursor(nullptr, IDC_ARROW),
+       reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1),
+       nullptr,
+       ROS("LogWindow"),
+       ExtractIcon(m_module, ROS("shell32.dll"), 15)
+    };
+    
+    
     {
         codes code = register_window(m_wc);
         if (code != codes::success) {
@@ -129,6 +166,14 @@ UINT logger::dx_log_window::height()
 
 LRESULT logger::dx_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    switch (uMsg) {
+
+    }
+
+    return logger::window::this_window_proc(hwnd, uMsg, wParam, lParam);
+}
+
+LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
 
     }

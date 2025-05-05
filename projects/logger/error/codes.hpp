@@ -16,6 +16,11 @@ namespace logger {
 		register_class_fail,
 		hwnd_error,
 		to_wide_string_failed,
-		get_client_rect_fail
+		get_client_rect_fail,
+		module_handle_error,
+		get_scroll_info_fail,
+		scroll_window_fail,
+		invalidate_rect_fail,
+		update_window_fail,
 	};
 }
