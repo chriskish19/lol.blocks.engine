@@ -3,7 +3,7 @@
 *
 *  Purpose: easy file move/name changes
 *
-*
+*  Project: gui
 * *************************************/
 
 #define STL_PRIVATE_INCLUDE_PATH			stl_includes_hpp				// the entire stl library

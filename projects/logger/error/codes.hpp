@@ -3,7 +3,7 @@
 *
 *  Purpose: house error codes
 *
-*
+*  Project: logger
 * *************************************/
 
 #pragma once
@@ -22,5 +22,7 @@ namespace logger {
 		scroll_window_fail,
 		invalidate_rect_fail,
 		update_window_fail,
+		to_narrow_string_failed,
+		hdc_error,
 	};
 }

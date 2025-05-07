@@ -4,6 +4,7 @@
 *  Purpose: a throwable object for 
 *			exceptions and errors
 *
+*  Project: logger 
 * *************************************/
 
 #pragma once

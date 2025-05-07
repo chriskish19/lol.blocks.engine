@@ -3,7 +3,8 @@
 *
 *  Purpose: provide helper functions
 *			for error related problems
-*
+*  
+*  Project: core
 * *************************************/
 
 #pragma once

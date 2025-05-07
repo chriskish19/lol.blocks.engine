@@ -1,3 +1,12 @@
+/***************************************
+*  File: object.cpp (error object)
+*
+*  Purpose: definitions for object.hpp
+*
+*  Project: core
+* *************************************/
+
+
 #include NAMES_INCLUDE
 #include CODE_OBJECT_INCLUDE_PATH
 

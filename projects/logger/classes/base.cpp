@@ -1,3 +1,11 @@
+/***************************************
+*  File: base.cpp
+*
+*  Purpose: base.hpp definitions
+*
+*  Project: logger
+* *************************************/
+
 #include NAMES_INCLUDE
 #include BASE_INCLUDE_PATH
 

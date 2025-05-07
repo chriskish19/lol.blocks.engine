@@ -3,7 +3,7 @@
 *
 *  Purpose: helper functions
 *
-*
+*  Project: core
 * *************************************/
 
 #pragma once

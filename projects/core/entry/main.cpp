@@ -1,3 +1,12 @@
+/***************************************
+*  File: main.cpp
+*
+*  Purpose: main entry into the program
+*
+*  Project: core
+* *************************************/
+
+
 #include NAMES_INCLUDE
 #include ALL_CORE_INCLUDE_PATH
 

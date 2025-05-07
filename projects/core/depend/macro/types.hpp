@@ -3,7 +3,7 @@
 *
 *  Purpose: handle unicode within namespaces
 *
-*
+*  Project: core
 * *************************************/
 
 #pragma once

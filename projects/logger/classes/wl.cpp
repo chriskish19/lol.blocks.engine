@@ -1,3 +1,11 @@
+/***************************************
+*  File: wl.cpp (window logger)
+*
+*  Purpose: wl.hpp definitions
+*
+*  Project: logger
+* *************************************/
+
 
 #include NAMES_INCLUDE
 #include WINDOW_LOGGER_INCLUDE_PATH

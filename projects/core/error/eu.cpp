@@ -1,3 +1,12 @@
+/***************************************
+*  File: eu.cpp (error utilities)
+*
+*  Purpose: error utilities definitions
+*
+*  Project: core
+* *************************************/
+
+
 #include NAMES_INCLUDE
 #include ERROR_UTILS_INCLUDE_PATH
 

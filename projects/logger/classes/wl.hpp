@@ -4,6 +4,7 @@
 *  Purpose: a window which displays 
 *			system logs
 *
+*  Project: logger
 * *************************************/
 
 #pragma once

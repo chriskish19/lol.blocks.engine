@@ -3,7 +3,7 @@
 *
 *  Purpose: a throwable error object
 *
-*
+*  Project: core
 * *************************************/
 
 #pragma once

@@ -3,7 +3,7 @@
 *
 *  Purpose: send logs to a file
 *
-*
+*  Project: logger
 * *************************************/
 
 #pragma once

@@ -1,2 +1,2 @@
-# lol.blocks dll project: gui
+# Project: gui
 - 

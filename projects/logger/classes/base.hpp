@@ -3,7 +3,7 @@
 *
 *  Purpose: handles underlying log system
 *
-*
+*  Project: logger
 * *************************************/
 
 #pragma once

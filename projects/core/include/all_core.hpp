@@ -3,7 +3,8 @@
 *
 *  Purpose: includes all headers from core
 *			project
-*
+*  
+*  Project: core
 * *************************************/
 
 #pragma once

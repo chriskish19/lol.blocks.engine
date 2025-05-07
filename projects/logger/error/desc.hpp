@@ -3,7 +3,7 @@
 *
 *  Purpose: error code messages
 *
-*
+*  Project: logger
 * *************************************/
 
 #pragma once
@@ -22,4 +22,6 @@ namespace logger {
 	inline const character* scroll_window_fail_description = ROS("logger code: the windows function ScrollWindow() failed to scroll the window.");
 	inline const character* invalidate_rect_fail_description = ROS("logger code: the windows function InvalidateRect() failed to invalidate the window region for redraw.");
 	inline const character* update_window_fail_description = ROS("logger code: the windows function UpdateWindow() failed to update the window.");
+	inline const character* to_narrow_string_failed_description = ROS("logger code: converting from wide string to narrow has failed.");
+	inline const character* hdc_error_description = ROS("logger code: handle to drawing context is nullptr.");
 }

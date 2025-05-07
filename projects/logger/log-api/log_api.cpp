@@ -1,16 +1,16 @@
 /***************************************
-*  File: c_funcs.cpp
+*  File: log_api.cpp (logger project helper 
+*        functions)
 *
-*  Purpose: helper functions definitions
+*  Purpose: log_api.hpp definitions
 *
-*  Project: core
+*  Project: logger
 * *************************************/
 
-
 #include NAMES_INCLUDE
-#include CORE_FUNCTIONS_INCLUDE_PATH
+#include LOG_API_INCLUDE_PATH
 
-std::wstring core::to_wide_string(const char* narrow)
+std::wstring logger::to_wide_string(const char* narrow)
 {
     /*
 
@@ -67,7 +67,7 @@ std::wstring core::to_wide_string(const char* narrow)
         }
 
         // throw an exception
-        throw lbe(codes::to_wide_string_failed, to_wide_string_failed_description);
+        throw le(codes::to_wide_string_failed, to_wide_string_failed_description);
 
         // returns an empty string
         return {};
@@ -84,7 +84,7 @@ std::wstring core::to_wide_string(const char* narrow)
     return std::wstring(buffer);
 }
 
-std::wstring core::to_wide_string(const std::string& narrow)
+std::wstring logger::to_wide_string(const std::string& narrow)
 {
     /*
 
@@ -143,7 +143,7 @@ std::wstring core::to_wide_string(const std::string& narrow)
         }
 
         // throw an exception
-        throw lbe(codes::to_wide_string_failed, to_wide_string_failed_description);
+        throw le(codes::to_wide_string_failed, to_wide_string_failed_description);
 
         // returns an empty string
         return {};
@@ -160,7 +160,7 @@ std::wstring core::to_wide_string(const std::string& narrow)
     return std::wstring(buffer);
 }
 
-std::string core::to_narrow_string(const wchar_t* wide)
+std::string logger::to_narrow_string(const wchar_t* wide)
 {
     /*
     *
@@ -224,7 +224,7 @@ std::string core::to_narrow_string(const wchar_t* wide)
         }
 
         // throw an exception
-        throw lbe(codes::to_narrow_string_failed, to_narrow_string_failed_description);
+        throw le(codes::to_narrow_string_failed, to_narrow_string_failed_description);
 
         // returns an empty string
         return {};
@@ -241,7 +241,7 @@ std::string core::to_narrow_string(const wchar_t* wide)
     return std::string(buffer);
 }
 
-std::string core::to_narrow_string(const std::wstring& wide)
+std::string logger::to_narrow_string(const std::wstring& wide)
 {
     /*
    *
@@ -307,7 +307,7 @@ std::string core::to_narrow_string(const std::wstring& wide)
         }
 
         // throw an exception
-        throw lbe(codes::to_narrow_string_failed, to_narrow_string_failed_description);
+        throw le(codes::to_narrow_string_failed, to_narrow_string_failed_description);
 
         // returns an empty string
         return {};
@@ -324,7 +324,7 @@ std::string core::to_narrow_string(const std::wstring& wide)
     return std::string(buffer);
 }
 
-std::wstring core::to_wide_string(const char* narrow, codes* code_p)
+std::wstring logger::to_wide_string(const char* narrow, codes* code_p)
 {
     // return nothing if code is nullptr
     if (code_p == nullptr) {
@@ -408,7 +408,7 @@ std::wstring core::to_wide_string(const char* narrow, codes* code_p)
     return temp_buffer;
 }
 
-std::wstring core::to_wide_string(const std::string& narrow, codes* code_p)
+std::wstring logger::to_wide_string(const std::string& narrow, codes* code_p)
 {
     // return nothing if code is nullptr
     if (code_p == nullptr) {
@@ -494,7 +494,7 @@ std::wstring core::to_wide_string(const std::string& narrow, codes* code_p)
     return temp_buffer;
 }
 
-std::string core::to_narrow_string(const wchar_t* wide, codes* code_p)
+std::string logger::to_narrow_string(const wchar_t* wide, codes* code_p)
 {
     // return nothing if code is nullptr
     if (code_p == nullptr) {
@@ -581,7 +581,7 @@ std::string core::to_narrow_string(const wchar_t* wide, codes* code_p)
     return temp_buffer_str;
 }
 
-std::string core::to_narrow_string(const std::wstring& wide, codes* code_p)
+std::string logger::to_narrow_string(const std::wstring& wide, codes* code_p)
 {
     // return nothing if code is nullptr
     if (code_p == nullptr) {
@@ -669,4 +669,208 @@ std::string core::to_narrow_string(const std::wstring& wide, codes* code_p)
 
     // return the narrow string using the buffer
     return temp_buffer_str;
+}
+
+logger::codes logger::vertical_drag(HWND hwnd, WPARAM wParam, int vscroll_position, int yChar)
+{
+    // Get all the vertial scroll bar information.
+    SCROLLINFO si = {};
+    si.cbSize = sizeof(si);
+    si.fMask = SIF_ALL;
+    if (GetScrollInfo(hwnd, SB_VERT, &si) == FALSE) {
+        throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
+    }
+
+    // Save the position for comparison later on.
+    vscroll_position = si.nPos;
+    switch (LOWORD(wParam))
+    {
+
+        // User clicked the HOME keyboard key.
+    case SB_TOP:
+        si.nPos = si.nMin;
+        break;
+
+        // User clicked the END keyboard key.
+    case SB_BOTTOM:
+        si.nPos = si.nMax;
+        break;
+
+        // User clicked the top arrow.
+    case SB_LINEUP:
+        si.nPos -= 1;
+        break;
+
+        // User clicked the bottom arrow.
+    case SB_LINEDOWN:
+        si.nPos += 1;
+        break;
+
+        // User clicked the scroll bar shaft above the scroll box.
+    case SB_PAGEUP:
+        si.nPos -= si.nPage;
+        break;
+
+        // User clicked the scroll bar shaft below the scroll box.
+    case SB_PAGEDOWN:
+        si.nPos += si.nPage;
+        break;
+
+        // User dragged the scroll box.
+    case SB_THUMBTRACK:
+        si.nPos = si.nTrackPos;
+        break;
+
+    default:
+        break;
+    }
+
+    // Set the position and then retrieve it.  Due to adjustments
+    // by Windows it may not be the same as the value set.
+    si.fMask = SIF_POS;
+    SetScrollInfo(hwnd, SB_VERT, &si, TRUE);
+    if (GetScrollInfo(hwnd, SB_VERT, &si) == FALSE) {
+        throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
+    }
+
+    // If the position has changed, scroll window and update it.
+    if (si.nPos != vscroll_position)
+    {
+        if (ScrollWindow(hwnd, 0, yChar * (vscroll_position - si.nPos), NULL, NULL) == FALSE) {
+            throw le(codes::scroll_window_fail, scroll_window_fail_description);
+        }
+    }
+
+    return codes::success;
+}
+
+logger::codes logger::horizontal_drag(HWND hwnd, WPARAM wParam, int hscroll_position,int xChar)
+{
+    SCROLLINFO si = {};
+    si.cbSize = sizeof(si);
+    si.fMask = SIF_ALL;
+    if (GetScrollInfo(hwnd, SB_HORZ, &si) == FALSE) {
+        throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
+    }
+
+    hscroll_position = si.nPos;
+    switch (LOWORD(wParam))
+    {
+        // User clicked the left arrow.
+    case SB_LINELEFT:
+        si.nPos -= 1;
+        break;
+
+        // User clicked the right arrow.
+    case SB_LINERIGHT:
+        si.nPos += 1;
+        break;
+
+        // User clicked the scroll bar shaft left of the scroll box.
+    case SB_PAGELEFT:
+        si.nPos -= si.nPage;
+        break;
+
+        // User clicked the scroll bar shaft right of the scroll box.
+    case SB_PAGERIGHT:
+        si.nPos += si.nPage;
+        break;
+
+        // User dragged the scroll box.
+    case SB_THUMBTRACK:
+        si.nPos = si.nTrackPos;
+        break;
+
+    default:
+        break;
+    }
+
+    // Ensure the position is within valid range.
+    si.nPos = std::clamp(si.nPos, si.nMin, si.nMax);
+
+    // Set the position and then retrieve it.  Due to adjustments
+    // by Windows it may not be the same as the value set.
+    si.fMask = SIF_POS;
+    SetScrollInfo(hwnd, SB_HORZ, &si, TRUE);
+    if (GetScrollInfo(hwnd, SB_HORZ, &si) == FALSE) {
+        throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
+    }
+
+    // If the position has changed, scroll the window.
+    if (si.nPos != hscroll_position)
+    {
+        if (ScrollWindow(hwnd, xChar * (hscroll_position - si.nPos), 0, NULL, NULL) == FALSE) {
+            throw le(codes::scroll_window_fail, scroll_window_fail_description);
+        }
+
+        if (InvalidateRect(hwnd, nullptr, TRUE) == FALSE) {
+            throw le(codes::invalidate_rect_fail, invalidate_rect_fail_description);
+        }
+
+        if (UpdateWindow(hwnd) == FALSE) {
+            throw le(codes::update_window_fail, update_window_fail_description);
+        }
+    }
+
+    return codes::success;
+}
+
+logger::codes logger::window_size_change(HWND hwnd, LPARAM lParam, int nol, int yChar, int xChar, int xClientMax)
+{
+    // Retrieve the dimensions of the client area. 
+    int yClient = HIWORD(lParam);
+    int xClient = LOWORD(lParam);
+
+    {
+        SCROLLINFO si = {};
+
+        // Set the vertical scrolling range and page size
+        si.cbSize = sizeof(si);
+        si.fMask = SIF_RANGE | SIF_PAGE;
+        si.nMin = 0;
+        si.nMax = nol - 1;
+        si.nPage = yClient / yChar;
+        SetScrollInfo(hwnd, SB_VERT, &si, TRUE);
+    }
+
+
+    {
+        SCROLLINFO si = {};
+
+        // Set the horizontal scrolling range and page size. 
+        si.cbSize = sizeof(si);
+        si.fMask = SIF_RANGE | SIF_PAGE;
+        si.nMin = 0;
+        si.nMax = 2 + xClientMax / xChar;
+        si.nPage = xClient / xChar;
+        SetScrollInfo(hwnd, SB_HORZ, &si, TRUE);
+    }
+
+    return codes::success;
+}
+
+logger::codes logger::send_text(HWND window, const string& message)
+{
+    // win32 api function
+    /*
+    
+    int DrawText(
+      [in]      HDC     hdc,
+      [in, out] LPCTSTR lpchText,
+      [in]      int     cchText,
+      [in, out] LPRECT  lprc,
+      [in]      UINT    format
+    );
+    
+    */
+
+    if (window == nullptr) {
+        return codes::hwnd_error;
+    }
+
+    HDC hdc = GetDC(window);
+
+    if (hdc == nullptr) {
+        return codes::hdc_error;
+    }
 }

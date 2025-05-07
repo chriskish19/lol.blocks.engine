@@ -3,7 +3,7 @@
 *
 *  Purpose: house window classes
 *
-*
+*  Project: core
 * *************************************/
 
 #pragma once

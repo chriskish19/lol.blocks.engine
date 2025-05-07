@@ -1,9 +1,10 @@
 /***************************************
-*  File:
+*  File: types.hpp 
 *
-*  Purpose:
+*  Purpose: handle defined types and 
+*           macros
 *
-*
+*  Project: engine
 * *************************************/
 
 #pragma once

@@ -1,3 +1,11 @@
+/***************************************
+*  File: co.cpp (code object)
+*
+*  Purpose: co.hpp definitions
+*
+*  Project: logger
+* *************************************/
+
 #include NAMES_INCLUDE
 #include CO_INCLUDE_PATH
 

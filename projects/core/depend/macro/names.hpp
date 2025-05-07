@@ -3,7 +3,8 @@
 *
 *  Purpose: easy file move/name changes without 
 *			without breaking #include paths
-*
+* 
+*  Project: core
 * *************************************/
 
 #define STL_PRIVATE_INCLUDE_PATH			stl_includes_hpp				// the entire stl library

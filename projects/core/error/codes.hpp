@@ -3,7 +3,7 @@
 *
 *  Purpose: error codes
 *
-*
+*  Project: core
 * *************************************/
 
 #pragma once
@@ -20,6 +20,6 @@ namespace core {
 		to_narrow_string_failed,
 		string_length_too_long,
 		match_code_default,
-
+		
 	};
 }

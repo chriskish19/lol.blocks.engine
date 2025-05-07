@@ -1,3 +1,11 @@
+/***************************************
+*  File: c_window.cpp (core window)
+*
+*  Purpose: core window definitions
+*
+*  Project: core
+* *************************************/
+
 #include NAMES_INCLUDE
 #include CORE_WINDOW_INCLUDE_PATH
 

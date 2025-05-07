@@ -4,6 +4,7 @@
 *  Purpose: easy file name changes and moves
 *			within engine project
 *
+*  Project: engine
 * *************************************/
 
 #define STL_PRIVATE_INCLUDE_PATH			stl_includes_hpp				// the entire stl library

@@ -3,7 +3,8 @@
 *
 *  Purpose: list of strings containing 
 *			descriptions of codes
-*
+*  
+*  Project: core
 * *************************************/
 
 #pragma once

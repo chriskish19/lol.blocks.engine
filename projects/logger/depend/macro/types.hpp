@@ -3,7 +3,7 @@
 *
 *  Purpose: handle settings
 *
-*
+*  Project: logger
 * *************************************/
 
 #pragma once

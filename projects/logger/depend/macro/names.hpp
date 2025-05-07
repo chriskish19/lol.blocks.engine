@@ -3,7 +3,8 @@
 *
 *  Purpose: easy file move/name changes without 
 *			without breaking #include paths
-*
+*  
+*  Project: logger
 * *************************************/
 
 // dependencies
@@ -17,9 +18,15 @@
 #define FILE_INCLUDE_PATH					file_hpp						// logs to a file
 #define WINDOW_LOGGER_INCLUDE_PATH			wl_hpp							// window logger terminal
 #define BASE_INCLUDE_PATH					base_hpp						// base logger
-#define SCROLL_INCLUDE_PATH					scroll_hpp						// scrolling in a window
+
 
 // error
 #define CODES_INCLUDE_PATH					codes_hpp						// error codes
 #define DESC_INCLUDE_PATH					desc_hpp						// description of error codes
 #define CO_INCLUDE_PATH						co_hpp							// code object
+
+// log api
+#define LOG_API_INCLUDE_PATH				log_api_hpp						// helper functions
+
+// include all logs headers
+#define ALL_LOGS_INCLUDE_PATH				all_logs_hpp					// includes all headers from logger project
