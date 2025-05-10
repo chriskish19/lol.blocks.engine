@@ -7,7 +7,7 @@
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
+#include LOGGER_NAMES_INCLUDE
 
 namespace logger {
 	enum class codes {
@@ -24,5 +24,11 @@ namespace logger {
 		update_window_fail,
 		to_narrow_string_failed,
 		hdc_error,
+		draw_text_error,
+		write_to_file_error,
+		file_open_error,
+		font_nullptr,
+		get_text_metrics_fail,
+		divison_by_zero,
 	};
 }

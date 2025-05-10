@@ -6,5 +6,5 @@
 *  Project: logger
 * *************************************/
 
-#include NAMES_INCLUDE
-#include DEPENDS_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_DEPENDS_INCLUDE_PATH

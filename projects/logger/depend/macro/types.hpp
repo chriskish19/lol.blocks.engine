@@ -7,9 +7,9 @@
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
-#include STL_INCLUDE_PATH
-#include WIN_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_STL_INCLUDE_PATH
+#include LOGGER_WIN_INCLUDE_PATH
 
 
 
@@ -25,11 +25,15 @@
 // read only string, prepends L""
 #define ROS(x) L##x
 
+// cerr
+#define CERROR std::wcerr
+
 namespace logger {
 	using string = std::wstring;
 	using character = wchar_t;
 	using character_p = character*;
 	using const_character_p = const character*;
+	using ofstream = std::wofstream;
 	namespace fs = std::filesystem;
 }
 

@@ -9,16 +9,16 @@
 
 #pragma once
 // macros
-#include NAMES_INCLUDE
-#include TYPES_INCLUDE_PATH 
+#include CORE_NAMES_INCLUDE
+#include CORE_TYPES_INCLUDE_PATH 
 
 // libraries
-#include STL_INCLUDE_PATH
-#include WIN_INCLUDE_PATH
+#include CORE_STL_INCLUDE_PATH
+#include CORE_WIN_INCLUDE_PATH
 
 // errors
-#include CODES_INCLUDE_PATH
-#include CODE_DESC_INCLUDE_PATH
+#include CORE_CODES_INCLUDE_PATH
+#include CORE_CODE_DESC_INCLUDE_PATH
 
 // window
 #include CORE_WINDOW_INCLUDE_PATH

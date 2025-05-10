@@ -7,8 +7,8 @@
 * *************************************/
 
 
-#include NAMES_INCLUDE
-#include ERROR_UTILS_INCLUDE_PATH
+#include CORE_NAMES_INCLUDE
+#include CORE_ERROR_UTILS_INCLUDE_PATH
 
 core::string core::match_code(codes code) {
 	switch (code) {

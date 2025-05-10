@@ -1,3 +1,4 @@
+
 /***************************************
 *  File: log_api.cpp (logger project helper 
 *        functions)
@@ -7,8 +8,8 @@
 *  Project: logger
 * *************************************/
 
-#include NAMES_INCLUDE
-#include LOG_API_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_LOG_API_INCLUDE_PATH
 
 std::wstring logger::to_wide_string(const char* narrow)
 {
@@ -817,6 +818,11 @@ logger::codes logger::horizontal_drag(HWND hwnd, WPARAM wParam, int hscroll_posi
 
 logger::codes logger::window_size_change(HWND hwnd, LPARAM lParam, int nol, int yChar, int xChar, int xClientMax)
 {
+    if (yChar==0 or xChar==0) {
+        return codes::divison_by_zero;
+    }
+    
+    
     // Retrieve the dimensions of the client area. 
     int yClient = HIWORD(lParam);
     int xClient = LOWORD(lParam);
@@ -849,7 +855,7 @@ logger::codes logger::window_size_change(HWND hwnd, LPARAM lParam, int nol, int 
     return codes::success;
 }
 
-logger::codes logger::send_text(HWND window, const string& message)
+logger::codes logger::send_text(HWND window, const string* message, RECT position)
 {
     // win32 api function
     /*
@@ -873,4 +879,48 @@ logger::codes logger::send_text(HWND window, const string& message)
     if (hdc == nullptr) {
         return codes::hdc_error;
     }
+
+    int text_height = DrawText(hdc, message->c_str(), -1, &position, DT_LEFT | DT_TOP);
+    
+    ReleaseDC(window, hdc);
+
+    return (text_height > 0) ? codes::success : codes::draw_text_error;
+}
+
+logger::codes logger::send_text(HDC hdc,const string* message, RECT position)
+{
+    // win32 api function
+    /*
+
+    int DrawText(
+      [in]      HDC     hdc,
+      [in, out] LPCTSTR lpchText,
+      [in]      int     cchText,
+      [in, out] LPRECT  lprc,
+      [in]      UINT    format
+    );
+
+    */
+
+    if (hdc == nullptr) {
+        return codes::hdc_error;
+    }
+
+    int text_height = DrawText(hdc, message->c_str(), -1, &position, DT_LEFT);
+
+    return (text_height > 0) ? codes::success : codes::draw_text_error;
+}
+
+logger::string logger::time_stamped(const string& message)
+{
+    try {
+        auto now = std::chrono::system_clock::now();
+        string time = std::format(ROS("[{}]"), now);
+        return time + message;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "exception: " << e.what() << std::endl;
+    }
+    // exception thrown we return nothing
+    return {};
 }

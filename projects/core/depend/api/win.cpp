@@ -6,5 +6,5 @@
 *  Project: core
 * *************************************/
 
-#include NAMES_INCLUDE
-#include WIN_INCLUDE_PATH
+#include CORE_NAMES_INCLUDE
+#include CORE_WIN_INCLUDE_PATH

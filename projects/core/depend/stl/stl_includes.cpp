@@ -7,5 +7,5 @@
 *  Project: core
 * *************************************/
 
-#include NAMES_INCLUDE
-#include STL_PRIVATE_INCLUDE_PATH
+#include CORE_NAMES_INCLUDE
+#include CORE_STL_PRIVATE_INCLUDE_PATH

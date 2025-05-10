@@ -1,3 +1,4 @@
+
 /***************************************
 *  File: co.cpp (code object)
 *
@@ -6,8 +7,8 @@
 *  Project: logger
 * *************************************/
 
-#include NAMES_INCLUDE
-#include CO_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_CO_INCLUDE_PATH
 
 logger::string logger::gl(std::source_location sl)
 {
@@ -129,4 +130,48 @@ logger::string logger::le::get_w32_error()
     LocalFree(messageBuffer);
 
     return message;
+}
+
+logger::string logger::le::match_code(codes code)
+{
+    switch (code) {
+        case codes::success:
+            success_description;
+        case codes::uninitialized:
+            uninitialized_description;
+        case codes::register_class_fail:
+            register_class_fail_description;
+        case codes::hwnd_error:
+            hwnd_error_description;
+        case codes::to_wide_string_failed:
+            to_wide_string_failed_description;
+        case codes::get_client_rect_fail:
+            get_client_rect_fail_description;
+        case codes::module_handle_error:
+            module_handle_error_description;
+        case codes::get_scroll_info_fail:
+            get_scroll_info_fail_description;
+        case codes::scroll_window_fail:
+            scroll_window_fail_description;
+        case codes::invalidate_rect_fail:
+            invalidate_rect_fail_description;
+        case codes::update_window_fail:
+            update_window_fail_description;
+        case codes::to_narrow_string_failed:
+            to_narrow_string_failed_description;
+        case codes::hdc_error:
+            hdc_error_description;
+        case codes::draw_text_error:
+            draw_text_error_description;
+        case codes::write_to_file_error:
+            write_to_file_error_description;
+        case codes::file_open_error:
+            file_open_error_description;
+        case codes::font_nullptr:
+            font_nullptr_description;
+        case codes::get_text_metrics_fail:
+            get_text_metrics_fail_description;
+        default:
+            return default_match_code_description;
+    }
 }

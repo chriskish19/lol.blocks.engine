@@ -7,12 +7,17 @@
 * *************************************/
 
 
-#include NAMES_INCLUDE
-#include ALL_CORE_INCLUDE_PATH
+#include CORE_NAMES_INCLUDE
+#include CORE_ALL_CORE_INCLUDE_PATH
 
-// dll project headers
-#include "all_engine.hpp"
-#include "all_gui.hpp"
+#include ENGINE_NAMES_INCLUDE
+#include ENGINE_ALL_ENGINE_INCLUDE_PATH
+
+#include GUI_NAMES_INCLUDE
+#include GUI_ALL_GUI_INCLUDE_PATH
+
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_ALL_LOGS_INCLUDE_PATH
 
 
 int WINAPI wWinMain(
@@ -21,6 +26,9 @@ int WINAPI wWinMain(
 	_In_ LPWSTR lpCmdLine,
 	_In_ int nShowCmd
 ) {
+	logger::classic_log_window* log_terminal = new logger::classic_log_window;
+	std::jthread lt_thread(&logger::classic_log_window::thread_go, log_terminal);
+
 	core::standard_window* window = new core::standard_window;
 	{
 		core::codes code = window->load();
@@ -33,7 +41,7 @@ int WINAPI wWinMain(
 		}
 	}
 
-
+	std::size_t i = 0;
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
 	{
@@ -45,12 +53,18 @@ int WINAPI wWinMain(
 		else
 		{
 			// render here
+			
 		}
 	}
 
 	if (window != nullptr) {
 		delete window;
 		window = nullptr;
+	}
+
+	if (log_terminal != nullptr) {
+		delete log_terminal;
+		log_terminal = nullptr;
 	}
 
 	return static_cast<int>(msg.wParam);

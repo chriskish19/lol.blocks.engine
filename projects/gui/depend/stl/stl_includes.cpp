@@ -7,5 +7,5 @@
 *  Project: gui
 * *************************************/
 
-#include NAMES_INCLUDE
-#include STL_PRIVATE_INCLUDE_PATH
+#include GUI_NAMES_INCLUDE
+#include GUI_STL_PRIVATE_INCLUDE_PATH

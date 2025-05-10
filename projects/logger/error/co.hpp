@@ -8,10 +8,10 @@
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
-#include DEPENDS_INCLUDE_PATH
-#include CODES_INCLUDE_PATH
-#include DESC_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_DEPENDS_INCLUDE_PATH
+#include LOGGER_CODES_INCLUDE_PATH
+#include LOGGER_DESC_INCLUDE_PATH
 
 
 
@@ -39,5 +39,8 @@ namespace logger {
 
 		// win32 error info
 		static string get_w32_error();
+
+		// match a code to its error description
+		static string match_code(codes code);
 	};
 }

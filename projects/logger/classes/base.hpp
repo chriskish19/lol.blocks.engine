@@ -7,10 +7,14 @@
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
-#include DEPENDS_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_DEPENDS_INCLUDE_PATH
+#include LOGGER_LOG_API_INCLUDE_PATH
 
+
+#define LOGGER_LINES 1000
 #define LOG_LENGTH 512
+#define LOGGER_FONT_SIZE 14
 
 namespace logger {
 	struct log {
@@ -46,8 +50,11 @@ namespace logger {
 
 		// get index position in logs vec
 		std::size_t get_index() { return m_index; }
+
+		// get logs_V pointer
+		std::vector<log*>* get_buffer() { return m_logs_v; }
 	protected:
-		std::vector<log>* m_logs_v = nullptr;
+		std::vector<log*>* m_logs_v = nullptr;
 
 		std::size_t m_index = 0;
 	};

@@ -4,8 +4,15 @@
 *  Purpose: main include for the logger
 *			library
 *
+*  Project: logger
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
-#include FILE_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_WINDOW_LOGGER_INCLUDE_PATH
+
+
+
+
+
+

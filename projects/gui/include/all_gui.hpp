@@ -3,11 +3,8 @@
 *
 *  Purpose: include all gui headers
 *
-*
+*  Project: gui
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
-
-#include WIN_INCLUDE_PATH
-#include STL_INCLUDE_PATH
+#include GUI_DUMMY

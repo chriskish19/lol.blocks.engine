@@ -7,9 +7,9 @@
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
-#include STL_INCLUDE_PATH
-#include WIN_INCLUDE_PATH
+#include CORE_NAMES_INCLUDE
+#include CORE_STL_INCLUDE_PATH
+#include CORE_WIN_INCLUDE_PATH
 
 
 

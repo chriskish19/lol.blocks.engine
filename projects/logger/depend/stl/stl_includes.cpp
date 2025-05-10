@@ -7,5 +7,5 @@
 *  Project: logger
 * *************************************/
 
-#include NAMES_INCLUDE
-#include STL_PRIVATE_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_STL_PRIVATE_INCLUDE_PATH

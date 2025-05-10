@@ -6,5 +6,5 @@
 *  Project: engine
 * *************************************/
 
-#include NAMES_INCLUDE
-#include WIN_INCLUDE_PATH
+#include ENGINE_NAMES_INCLUDE
+#include ENGINE_WIN_INCLUDE_PATH

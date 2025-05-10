@@ -6,7 +6,7 @@
 *  Project: core
 * *************************************/
 
-#include NAMES_INCLUDE
+#include CORE_NAMES_INCLUDE
 #include CORE_WINDOW_INCLUDE_PATH
 
 LRESULT core::standard_window::s_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

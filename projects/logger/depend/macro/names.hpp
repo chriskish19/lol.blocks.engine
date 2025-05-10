@@ -8,25 +8,24 @@
 * *************************************/
 
 // dependencies
-#define STL_PRIVATE_INCLUDE_PATH			stl_includes_hpp				// the entire stl library
-#define WIN_INCLUDE_PATH					win_hpp							// all windows includes
-#define STL_INCLUDE_PATH					stl_hpp							// specific version include stl library
-#define TYPES_INCLUDE_PATH					types_hpp						// handles unicode types and some macros
-#define DEPENDS_INCLUDE_PATH				d_inc_hpp						// include all dependencies
+#define LOGGER_STL_PRIVATE_INCLUDE_PATH				LOGGER_stl_includes_hpp					// the entire stl library
+#define LOGGER_WIN_INCLUDE_PATH						LOGGER_win_hpp							// all windows includes
+#define LOGGER_STL_INCLUDE_PATH						LOGGER_stl_hpp							// specific version include stl library
+#define LOGGER_TYPES_INCLUDE_PATH					LOGGER_types_hpp						// handles unicode types and some macros
+#define LOGGER_DEPENDS_INCLUDE_PATH					LOGGER_d_inc_hpp						// include all dependencies
 
 // classes
-#define FILE_INCLUDE_PATH					file_hpp						// logs to a file
-#define WINDOW_LOGGER_INCLUDE_PATH			wl_hpp							// window logger terminal
-#define BASE_INCLUDE_PATH					base_hpp						// base logger
-
+#define LOGGER_FILE_INCLUDE_PATH					LOGGER_file_hpp							// logs to a file
+#define LOGGER_WINDOW_LOGGER_INCLUDE_PATH			LOGGER_wl_hpp							// window logger terminal
+#define LOGGER_BASE_INCLUDE_PATH					LOGGER_base_hpp							// base logger
 
 // error
-#define CODES_INCLUDE_PATH					codes_hpp						// error codes
-#define DESC_INCLUDE_PATH					desc_hpp						// description of error codes
-#define CO_INCLUDE_PATH						co_hpp							// code object
+#define LOGGER_CODES_INCLUDE_PATH					LOGGER_codes_hpp						// error codes
+#define LOGGER_DESC_INCLUDE_PATH					LOGGER_desc_hpp							// description of error codes
+#define LOGGER_CO_INCLUDE_PATH						LOGGER_co_hpp							// code object
 
 // log api
-#define LOG_API_INCLUDE_PATH				log_api_hpp						// helper functions
+#define LOGGER_LOG_API_INCLUDE_PATH					LOGGER_log_api_hpp						// helper functions
 
 // include all logs headers
-#define ALL_LOGS_INCLUDE_PATH				all_logs_hpp					// includes all headers from logger project
+#define LOGGER_ALL_LOGS_INCLUDE_PATH				LOGGER_all_logs_hpp						// includes all headers from logger project

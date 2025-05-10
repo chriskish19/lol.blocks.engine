@@ -6,5 +6,5 @@
 *  Project: logger
 * *************************************/
 
-#include NAMES_INCLUDE
-#include WIN_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_WIN_INCLUDE_PATH

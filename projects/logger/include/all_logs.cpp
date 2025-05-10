@@ -7,5 +7,5 @@
 *  Project: logger
 * *************************************/
 
-#include NAMES_INCLUDE
-#include ALL_LOGS_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_ALL_LOGS_INCLUDE_PATH

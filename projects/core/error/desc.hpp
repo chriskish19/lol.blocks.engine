@@ -8,8 +8,8 @@
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
-#include TYPES_INCLUDE_PATH
+#include CORE_NAMES_INCLUDE
+#include CORE_TYPES_INCLUDE_PATH
 
 namespace core {
 	inline const character* success_description = ROS("core code: successful execution.");

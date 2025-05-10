@@ -7,12 +7,11 @@
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
-#include TYPES_INCLUDE_PATH
-
-#include CODES_INCLUDE_PATH
-#include WIN_INCLUDE_PATH
-#include STL_INCLUDE_PATH
+#include CORE_NAMES_INCLUDE
+#include CORE_TYPES_INCLUDE_PATH
+#include CORE_CODES_INCLUDE_PATH
+#include CORE_WIN_INCLUDE_PATH
+#include CORE_STL_INCLUDE_PATH
 
 namespace core {
 	struct window_description {

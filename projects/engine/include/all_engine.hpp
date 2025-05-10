@@ -7,9 +7,4 @@
 * *************************************/
 
 #pragma once
-
-#include NAMES_INCLUDE
-
-// see NAMES_INCLUDE for descriptions
-#include WIN_INCLUDE_PATH
-#include STL_INCLUDE_PATH
+#include ENGINE_DUMMY

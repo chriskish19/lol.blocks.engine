@@ -7,11 +7,11 @@
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
-#include TYPES_INCLUDE_PATH
-#include STL_INCLUDE_PATH
-#include CODES_INCLUDE_PATH
-#include CODE_OBJECT_INCLUDE_PATH
+#include CORE_NAMES_INCLUDE
+#include CORE_TYPES_INCLUDE_PATH
+#include CORE_STL_INCLUDE_PATH
+#include CORE_CODES_INCLUDE_PATH
+#include CORE_CODE_OBJECT_INCLUDE_PATH
 
 namespace core {
 	// string conversions, if max_string_buffer is exceeded

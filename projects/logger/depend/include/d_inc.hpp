@@ -7,7 +7,7 @@
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
-#include TYPES_INCLUDE_PATH
-#include STL_INCLUDE_PATH
-#include WIN_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_TYPES_INCLUDE_PATH
+#include LOGGER_STL_INCLUDE_PATH
+#include LOGGER_WIN_INCLUDE_PATH

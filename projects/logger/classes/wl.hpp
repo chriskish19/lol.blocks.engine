@@ -8,11 +8,12 @@
 * *************************************/
 
 #pragma once
-#include NAMES_INCLUDE
-#include DEPENDS_INCLUDE_PATH
-#include CODES_INCLUDE_PATH
-#include BASE_INCLUDE_PATH
-#include CO_INCLUDE_PATH
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_DEPENDS_INCLUDE_PATH
+#include LOGGER_CODES_INCLUDE_PATH
+#include LOGGER_BASE_INCLUDE_PATH
+#include LOGGER_CO_INCLUDE_PATH
+#include LOGGER_LOG_API_INCLUDE_PATH
 
 
 namespace logger {
@@ -85,9 +86,29 @@ namespace logger {
 	// uses win32 api and classic window logging
 	class LOGS_API classic_log_window : public logger::window {
 	public:
-		classic_log_window() = default;
+		classic_log_window();
 
+		codes load() override;
+
+		void send_message(const string& message);
+
+		void thread_go();
 	protected:
 		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
+
+		int m_nol = LOGGER_LINES; 
+		int m_yChar = 0;
+		int m_xChar = 0;
+		int m_xClientMax = 0;
+		int m_font_size = LOGGER_FONT_SIZE;
+		int m_xUpper = 0;
+		int m_hscroll_position = 0;
+		int m_vscroll_position = 0;
+
+		// custom font
+		HFONT m_clw_font = nullptr;
+
+		// underlying log system
+		base log_foundation = base(LOGGER_LINES);
 	};
 }

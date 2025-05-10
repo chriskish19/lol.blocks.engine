@@ -7,8 +7,8 @@
 * *************************************/
 
 
-#include NAMES_INCLUDE
-#include CODE_OBJECT_INCLUDE_PATH
+#include CORE_NAMES_INCLUDE
+#include CORE_CODE_OBJECT_INCLUDE_PATH
 
 
 std::wstring core::lbe::to_wide(const std::string& narrow)

@@ -7,5 +7,5 @@
 *  Project: core
 * *************************************/
 
-#include NAMES_INCLUDE
-#include ALL_CORE_INCLUDE_PATH
+#include CORE_NAMES_INCLUDE
+#include CORE_ALL_CORE_INCLUDE_PATH

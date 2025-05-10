@@ -6,5 +6,5 @@
 *  Project: gui
 * *************************************/
 
-#include NAMES_INCLUDE
-#include WIN_INCLUDE_PATH
+#include GUI_NAMES_INCLUDE
+#include GUI_WIN_INCLUDE_PATH

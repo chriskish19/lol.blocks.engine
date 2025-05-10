@@ -46,14 +46,14 @@ add_executable(${core} WIN32 ${core_sf} ${core_hf})
 # very handy for name changes and file moves
 foreach(HEADER_FILE ${core_hf})
     get_filename_component(FILE_NAME ${HEADER_FILE} NAME_WE)
-    set(FILE_NAME_HPP "${FILE_NAME}_hpp")
+    set(FILE_NAME_HPP "CORE_${FILE_NAME}_hpp")
     set(HEADER_FILE_PATH "\"${HEADER_FILE}\"")
     target_compile_definitions(${core} PRIVATE -D${FILE_NAME_HPP}=${HEADER_FILE_PATH})
     
     # for file name changes in the project
     # their is a file called names.hpp that manages all file name changes in the project
     if(${FILE_NAME} STREQUAL "names")
-        target_compile_definitions(${core} PRIVATE -DNAMES_INCLUDE=${FILE_NAME_HPP})
+        target_compile_definitions(${core} PRIVATE -DCORE_NAMES_INCLUDE=${FILE_NAME_HPP})
     endif()
 endforeach()
 
@@ -67,19 +67,22 @@ file(GLOB_RECURSE engine_hf "../projects/engine/*.hpp") # engine_hf (engine head
 # build engine dll libs
 add_library(${engine} SHARED ${engine_sf} ${engine_hf})
 
+# linker settings
+target_compile_definitions(${engine} PRIVATE -DENGINE_EXPORTS)
+
 # engine header file names
 # creates macros for each hpp file include path
 # very handy for name changes and file moves
 foreach(HEADER_FILE ${engine_hf})
     get_filename_component(FILE_NAME ${HEADER_FILE} NAME_WE)
-    set(FILE_NAME_HPP "${FILE_NAME}_hpp")
+    set(FILE_NAME_HPP "ENGINE_${FILE_NAME}_hpp")
     set(HEADER_FILE_PATH "\"${HEADER_FILE}\"")
-    target_compile_definitions(${engine} PRIVATE -D${FILE_NAME_HPP}=${HEADER_FILE_PATH})
+    target_compile_definitions(${engine} PUBLIC -D${FILE_NAME_HPP}=${HEADER_FILE_PATH})
     
     # for file name changes in the project
     # their is a file called names.hpp that manages all file name changes in the project
     if(${FILE_NAME} STREQUAL "names")
-        target_compile_definitions(${engine} PRIVATE -DNAMES_INCLUDE=${FILE_NAME_HPP})
+        target_compile_definitions(${engine} PUBLIC -DENGINE_NAMES_INCLUDE=${FILE_NAME_HPP})
     endif()
 endforeach()
 
@@ -109,19 +112,22 @@ file(GLOB_RECURSE gui_hf "../projects/gui/*.hpp")
 # build gui dll lib
 add_library(${gui} SHARED ${gui_sf} ${gui_hf})
 
+# linker settings
+target_compile_definitions(${gui} PRIVATE -DGUI_EXPORTS)
+
 # gui header file names
 # creates macros for each hpp file include path
 # very handy for name changes and file moves
 foreach(HEADER_FILE ${gui_hf})
     get_filename_component(FILE_NAME ${HEADER_FILE} NAME_WE)
-    set(FILE_NAME_HPP "${FILE_NAME}_hpp")
+    set(FILE_NAME_HPP "GUI_${FILE_NAME}_hpp")
     set(HEADER_FILE_PATH "\"${HEADER_FILE}\"")
-    target_compile_definitions(${gui} PRIVATE -D${FILE_NAME_HPP}=${HEADER_FILE_PATH})
+    target_compile_definitions(${gui} PUBLIC -D${FILE_NAME_HPP}=${HEADER_FILE_PATH})
     
     # for file name changes in the project
     # their is a file called names.hpp that manages all file name changes in the project
     if(${FILE_NAME} STREQUAL "names")
-        target_compile_definitions(${gui} PRIVATE -DNAMES_INCLUDE=${FILE_NAME_HPP})
+        target_compile_definitions(${gui} PUBLIC -DGUI_NAMES_INCLUDE=${FILE_NAME_HPP})
     endif()
 endforeach()
 
@@ -154,14 +160,14 @@ target_compile_definitions(${logs} PRIVATE -DLOGS_EXPORTS)
 # very handy for name changes and file moves
 foreach(HEADER_FILE ${logger_hf})
     get_filename_component(FILE_NAME ${HEADER_FILE} NAME_WE)
-    set(FILE_NAME_HPP "${FILE_NAME}_hpp")
+    set(FILE_NAME_HPP "LOGGER_${FILE_NAME}_hpp")
     set(HEADER_FILE_PATH "\"${HEADER_FILE}\"")
-    target_compile_definitions(${logs} PRIVATE -D${FILE_NAME_HPP}=${HEADER_FILE_PATH})
+    target_compile_definitions(${logs} PUBLIC -D${FILE_NAME_HPP}=${HEADER_FILE_PATH})
     
     # for file name changes in the project
     # their is a file called names.hpp that manages all file name changes in the project
     if(${FILE_NAME} STREQUAL "names")
-        target_compile_definitions(${logs} PRIVATE -DNAMES_INCLUDE=${FILE_NAME_HPP})
+        target_compile_definitions(${logs} PUBLIC -DLOGGER_NAMES_INCLUDE=${FILE_NAME_HPP})
     endif()
 endforeach()
 
@@ -180,6 +186,4 @@ target_link_libraries(${logs}
 
 # link libs to core
 target_link_libraries(${core} PUBLIC ${gui} ${engine} ${logs})
-target_include_directories(${core} PRIVATE "../projects/engine/include" "../projects/gui/include")
-
 

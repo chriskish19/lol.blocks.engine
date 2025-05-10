@@ -7,7 +7,7 @@
 * *************************************/
 
 
-#include NAMES_INCLUDE
+#include CORE_NAMES_INCLUDE
 #include CORE_FUNCTIONS_INCLUDE_PATH
 
 std::wstring core::to_wide_string(const char* narrow)
