@@ -93,9 +93,15 @@ namespace logger {
 		void send_message(const string& message);
 
 		void thread_go();
+
+		codes wait_until_init();
+
+		// length of time stamp
+		const std::size_t m_ts_length = get_time_length();
 	protected:
 		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
+		// scrolling
 		int m_nol = LOGGER_LINES; 
 		int m_yChar = 0;
 		int m_xChar = 0;
@@ -110,5 +116,15 @@ namespace logger {
 
 		// underlying log system
 		base log_foundation = base(LOGGER_LINES);
+
+		// prevent concurrency errors
+		std::mutex m_message_mtx;
+
+		// init
+		std::atomic<bool> m_wait_b = false;
+		std::condition_variable m_wait_cv;
+
+		// returns the length of a time stamp
+		std::size_t get_time_length();
 	};
 }

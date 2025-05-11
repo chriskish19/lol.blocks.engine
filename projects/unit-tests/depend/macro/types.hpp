@@ -1,20 +1,16 @@
 /***************************************
 *  File: types.hpp
 *
-*  Purpose: handle unicode within namespaces
+*  Purpose: handle types (unicode ect...)
 *
-*  Project: core
+*  Project: tests
 * *************************************/
 
 #pragma once
-#include CORE_NAMES_INCLUDE
-#include CORE_STL_INCLUDE_PATH
-#include CORE_WIN_INCLUDE_PATH
+#include TEST_NAMES_INCLUDE
+#include TEST_STL_INCLUDE_PATH
 
 
-
-
-#define MAX_STRING 512
 
 #if defined(UNICODE) || defined(_UNICODE)
 
@@ -24,11 +20,16 @@
 // read only string, prepends L""
 #define ROS(x) L##x
 
-namespace core {
+// cerr
+#define CERROR std::wcerr
+
+namespace test {
 	using string = std::wstring;
 	using character = wchar_t;
 	using character_p = character*;
 	using const_character_p = const character*;
+	using ofstream = std::wofstream;
+	namespace fs = std::filesystem;
 }
 
 #else
@@ -36,7 +37,7 @@ namespace core {
 #define ROS(x) x
 #define NARROW 1
 
-namespace core {
+namespace logger {
 	using string = std::string;
 	using character = char;
 }
@@ -44,5 +45,8 @@ namespace core {
 
 #endif
 
-#define MAIN_ENTRY 0
-#define TEST_ENTRY 1
+#ifdef TEST_EXPORTS
+#define TEST_API __declspec(dllexport)
+#else
+#define TEST_API __declspec(dllimport)
+#endif

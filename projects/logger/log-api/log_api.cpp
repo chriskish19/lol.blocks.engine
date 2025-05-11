@@ -1,3 +1,4 @@
+#include "log_api.hpp"
 
 /***************************************
 *  File: log_api.cpp (logger project helper 
@@ -923,4 +924,11 @@ logger::string logger::time_stamped(const string& message)
     }
     // exception thrown we return nothing
     return {};
+}
+
+void logger::er_co_out(codes code)
+{
+    string description = le::match_code(code);
+    le log_out(code, description);
+    CERROR << log_out.m_desc << "\n" << log_out.m_loc << "\n" << log_out.m_w32 << std::endl;
 }

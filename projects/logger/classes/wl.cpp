@@ -247,6 +247,8 @@ logger::codes logger::classic_log_window::load()
 
 void logger::classic_log_window::send_message(const string& message)
 {
+    std::lock_guard<std::mutex> local_lock(m_message_mtx);
+    
     log_foundation.set_message(message);
 
     auto log_buffer_p = log_foundation.get_buffer();
@@ -261,6 +263,7 @@ void logger::classic_log_window::thread_go()
     {
         codes code = load();
         if (code != codes::success) {
+            er_co_out(code);
             return;
         }
     }
@@ -274,8 +277,39 @@ void logger::classic_log_window::thread_go()
     }
 }
 
+logger::codes logger::classic_log_window::wait_until_init()
+{
+    // wait here
+    std::mutex local_mtx;
+    std::unique_lock<std::mutex> local_lock(local_mtx);
+    m_wait_cv.wait(local_lock, [this]
+        {
+            return m_wait_b.load();
+        });
+
+    return codes::success;
+}
+
+std::size_t logger::classic_log_window::get_time_length()
+{
+    string time = time_stamped(ROS(""));
+    return time.size();
+}
+
 LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
+        case WM_SHOWWINDOW:
+        {
+            // window logger window was successfully created
+            if (hwnd == m_handle) {
+
+                // tell waiting thread its safe to procceed...
+                m_wait_b.store(true);
+                m_wait_cv.notify_all();
+            }
+            break;
+        }
+    
         case WM_SIZE:
         {
             window_size_change(m_handle, lParam, m_nol, m_yChar, m_xChar, m_xClientMax);
@@ -296,6 +330,13 @@ LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARA
 
         case WM_PAINT:
         {
+            std::lock_guard<std::mutex> local_lock(m_message_mtx);
+            
+            RECT wl_rect = {};
+            if (GetClientRect(hwnd, &wl_rect) == FALSE) {
+                er_co_out(codes::get_client_rect_fail);
+            }
+
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hwnd, &ps);
 
@@ -312,33 +353,35 @@ LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARA
             GetScrollInfo(hwnd, SB_HORZ, &si);
             m_hscroll_position = si.nPos;
 
-            FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
+            FillRect(hdc, &wl_rect, (HBRUSH)(COLOR_WINDOW + 1));
 
             // number of lines to print
-            std::size_t nol_to_p = static_cast<std::size_t>((ps.rcPaint.bottom - ps.rcPaint.top) / m_yChar);
+            std::size_t nol_to_p = static_cast<std::size_t>((wl_rect.bottom - wl_rect.top) / m_yChar);
 
             std::size_t first_line = m_vscroll_position;
             std::size_t last_line = first_line + nol_to_p;
 
             auto log_buffer = log_foundation.get_buffer();
 
+            std::size_t counter = 0;
             for (std::size_t i = first_line; i < last_line and i < log_buffer->size(); ++i) {
                 // get log
                 auto log = log_buffer->at(i);
 
                 // calculate tops
-                std::size_t top = ps.rcPaint.top + (i * m_yChar);
+                std::size_t top = wl_rect.top + (counter * m_yChar);
+                counter++;
 
                 // calculate bottoms
                 std::size_t bottom = top + m_yChar;
 
                 // set rects
-                *log->window_position = RECT(ps.rcPaint.left, top, ps.rcPaint.right, bottom);
+                *log->window_position = RECT(wl_rect.left, top, wl_rect.right, bottom);
 
                 // write to terminal window
                 codes code = send_text(hdc, log->message, *log->window_position);
                 if (code != codes::success) {
-                    CERROR << ROS("send text error: ") << le::match_code(code) << std::endl;
+                    er_co_out(code);
                 }
             }
 

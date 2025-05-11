@@ -7,11 +7,19 @@
 *  Project: engine
 * *************************************/
 
+// dependencies
 #define ENGINE_STL_PRIVATE_INCLUDE_PATH				ENGINE_stl_includes_hpp					// the entire stl library
 #define ENGINE_WIN_INCLUDE_PATH						ENGINE_win_hpp							// all windows includes
 #define ENGINE_STL_INCLUDE_PATH						ENGINE_stl_hpp							// specific version include stl library
-#define ENGINE_ALL_ENGINE_INCLUDE_PATH				ENGINE_all_engine_hpp					// includes all engine headers
 #define ENGINE_TYPES_INCLUDE_PATH					ENGINE_types_hpp						// types stuff
+#define ENGINE_DX_INCLUDE_PATH						ENGINE_dx_api_inc_hpp					// direct x includes
 
-// dummy file
-#define ENGINE_DUMMY	ENGINE_dummy_hpp
+// all dependencies include
+#define ENGINE_ALL_DEPENDS_INCLUDE_PATH				ENGINE_d_inc_hpp						// includes all dependencies in one header
+
+// all engine library
+#define ENGINE_ALL_ENGINE_INCLUDE_PATH				ENGINE_all_engine_hpp					// includes all engine headers
+
+// classes
+#define ENGINE_DX11CAM_INCLUDE_PATH					ENGINE_dx11_camera_hpp					// direct x 11 camera
+#define ENGINE_DX11SETUP_INCLUDE_PATH				ENGINE_sdx11_hpp						// direct x 11 setup

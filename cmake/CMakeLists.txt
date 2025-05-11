@@ -6,6 +6,7 @@ set(engine "lol.blocks.engine")
 set(core "lol.blocks.core")
 set(gui "lol.blocks.gui")
 set(logs "lol.blocks.logger")
+set(tests "lol.blocks.tests")
 
 # create the main project
 project(${core})
@@ -58,6 +59,50 @@ foreach(HEADER_FILE ${core_hf})
 endforeach()
 
 
+# logger is linked lib (dll)
+# get logger source and headers
+file(GLOB_RECURSE logger_sf "../projects/logger/*.cpp")
+file(GLOB_RECURSE logger_hf "../projects/logger/*.hpp")
+
+# build logger dll lib
+add_library(${logs} SHARED ${logger_sf} ${logger_hf})
+
+# linker settings
+target_compile_definitions(${logs} PRIVATE -DLOGS_EXPORTS)
+
+# logger header file names
+# creates macros for each hpp file include path
+# very handy for name changes and file moves
+foreach(HEADER_FILE ${logger_hf})
+    get_filename_component(FILE_NAME ${HEADER_FILE} NAME_WE)
+    set(FILE_NAME_HPP "LOGGER_${FILE_NAME}_hpp")
+    set(HEADER_FILE_PATH "\"${HEADER_FILE}\"")
+    target_compile_definitions(${logs} PUBLIC -D${FILE_NAME_HPP}=${HEADER_FILE_PATH})
+    
+    # for file name changes in the project
+    # their is a file called names.hpp that manages all file name changes in the project
+    if(${FILE_NAME} STREQUAL "names")
+        target_compile_definitions(${logs} PUBLIC -DLOGGER_NAMES_INCLUDE=${FILE_NAME_HPP})
+    endif()
+endforeach()
+
+# Link Win32 libraries to gui
+target_link_libraries(${logs}
+    PRIVATE
+    user32
+    gdi32
+    shell32
+    ole32
+    oleaut32
+    uuid
+    comdlg32
+    advapi32
+)
+
+
+
+# directx toolkit
+find_package(directxtk CONFIG REQUIRED)
 
 # engine is linked lib
 # get engine source and header files
@@ -97,9 +142,12 @@ target_link_libraries(${engine}
     uuid
     comdlg32
     advapi32
-    d3d12
+    d3d11
     dxgi
     d3dcompiler
+    Microsoft::DirectXTK
+    runtimeobject
+    ${logs}
 )
 
 
@@ -142,37 +190,39 @@ target_link_libraries(${gui}
     uuid
     comdlg32
     advapi32
+    ${logs}
 )
 
-# logger is linked lib (dll)
-# get logger source and headers
-file(GLOB_RECURSE logger_sf "../projects/logger/*.cpp")
-file(GLOB_RECURSE logger_hf "../projects/logger/*.hpp")
 
-# build logger dll lib
-add_library(${logs} SHARED ${logger_sf} ${logger_hf})
+# tests is linked lib
+# get tests source and header files
+file(GLOB_RECURSE tests_sf "../projects/unit-tests/*.cpp") # tests_sf (tests source files)
+file(GLOB_RECURSE tests_hf "../projects/unit-tests/*.hpp") # tests_hf (tests header files)
+
+# build engine dll libs
+add_library(${tests} SHARED ${tests_sf} ${tests_hf})
 
 # linker settings
-target_compile_definitions(${logs} PRIVATE -DLOGS_EXPORTS)
+target_compile_definitions(${tests} PRIVATE -DTEST_EXPORTS)
 
-# logger header file names
+# tests header file names
 # creates macros for each hpp file include path
 # very handy for name changes and file moves
-foreach(HEADER_FILE ${logger_hf})
+foreach(HEADER_FILE ${tests_hf})
     get_filename_component(FILE_NAME ${HEADER_FILE} NAME_WE)
-    set(FILE_NAME_HPP "LOGGER_${FILE_NAME}_hpp")
+    set(FILE_NAME_HPP "TEST_${FILE_NAME}_hpp")
     set(HEADER_FILE_PATH "\"${HEADER_FILE}\"")
-    target_compile_definitions(${logs} PUBLIC -D${FILE_NAME_HPP}=${HEADER_FILE_PATH})
+    target_compile_definitions(${tests} PUBLIC -D${FILE_NAME_HPP}=${HEADER_FILE_PATH})
     
     # for file name changes in the project
     # their is a file called names.hpp that manages all file name changes in the project
     if(${FILE_NAME} STREQUAL "names")
-        target_compile_definitions(${logs} PUBLIC -DLOGGER_NAMES_INCLUDE=${FILE_NAME_HPP})
+        target_compile_definitions(${tests} PUBLIC -DTEST_NAMES_INCLUDE=${FILE_NAME_HPP})
     endif()
 endforeach()
 
-# Link Win32 libraries to gui
-target_link_libraries(${logs}
+# link win32 and dx libraries to engine
+target_link_libraries(${tests}
     PRIVATE
     user32
     gdi32
@@ -182,8 +232,19 @@ target_link_libraries(${logs}
     uuid
     comdlg32
     advapi32
+    d3d11
+    dxgi
+    d3dcompiler
+    ${logs}
+    ${engine}
+    ${gui}
 )
 
+
 # link libs to core
-target_link_libraries(${core} PUBLIC ${gui} ${engine} ${logs})
+target_link_libraries(${core} PUBLIC 
+${gui} 
+${engine} 
+${logs} 
+${tests})
 

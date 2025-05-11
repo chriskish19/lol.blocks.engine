@@ -80,4 +80,7 @@ namespace logger{
 	// simple time stamp a message
 	// returns the message with a time on it ([2025-05-09-14:00:30...])
 	string time_stamped(const string& message);
+
+	// log a CO object to the output window
+	void er_co_out(codes code);
 }
