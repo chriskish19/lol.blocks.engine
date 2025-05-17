@@ -23,3 +23,7 @@
 // classes
 #define ENGINE_DX11CAM_INCLUDE_PATH					ENGINE_dx11_camera_hpp					// direct x 11 camera
 #define ENGINE_DX11SETUP_INCLUDE_PATH				ENGINE_sdx11_hpp						// direct x 11 setup
+
+// error
+#define ENGINE_CODES_INCLUDE_PATH					ENGINE_codes_hpp						// error codes
+#define ENGINE_DX11ERU_INCLUDE_PATH					ENGINE_e_dx11_u_hpp						// direct x 11 error utilities

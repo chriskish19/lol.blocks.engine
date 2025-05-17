@@ -1,10 +1,16 @@
-#include NAMES_INCLUDE
-#include DX11SETUP_INCLUDE_PATH
+/***************************************
+*  File: sdx11.cpp (setup direct x 11)
+*
+*  Purpose: sdx11.hpp definitions
+*
+*  Project: engine
+* *************************************/
+
+#include ENGINE_NAMES_INCLUDE
+#include ENGINE_DX11SETUP_INCLUDE_PATH
 
 
-
-
-HRESULT dx11::create_device(device_description* dd) {
+HRESULT engine::dx11::create_device(device_description* dd) {
 
 	/*
 	
@@ -52,7 +58,7 @@ HRESULT dx11::create_device(device_description* dd) {
 	return hr;
 }
 
-dx11::device_description::~device_description()
+engine::dx11::device_description::~device_description()
 {
 	if (pAdapter != nullptr) {
 		pAdapter->Release();
@@ -86,14 +92,14 @@ dx11::device_description::~device_description()
 	}
 }
 
-ID3D11Texture2D* dx11::cbb(IDXGISwapChain* pSwapChain) {
+ID3D11Texture2D* engine::dx11::cbb(IDXGISwapChain* pSwapChain) {
 	ID3D11Texture2D* p_back_buffer = nullptr;
 	HRESULT hr = pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&p_back_buffer);
 	st_vs_out(hr);
 	return p_back_buffer;
 }
 
-ID3D11RenderTargetView* dx11::crtv(ID3D11Device* pDevice, ID3D11Texture2D* pBackBuffer) {
+ID3D11RenderTargetView* engine::dx11::crtv(ID3D11Device* pDevice, ID3D11Texture2D* pBackBuffer) {
 	// render target view
 	ID3D11RenderTargetView* p_rtv = nullptr;
 	HRESULT hr = pDevice->CreateRenderTargetView(pBackBuffer, nullptr, &p_rtv);
@@ -101,7 +107,7 @@ ID3D11RenderTargetView* dx11::crtv(ID3D11Device* pDevice, ID3D11Texture2D* pBack
 	return p_rtv;
 }
 
-ID3D11Texture2D* dx11::cdsb(const D3D11_TEXTURE2D_DESC* p_dsd, ID3D11Device* p_device) {
+ID3D11Texture2D* engine::dx11::cdsb(const D3D11_TEXTURE2D_DESC* p_dsd, ID3D11Device* p_device) {
 	// depth stencil buffer
 	ID3D11Texture2D* p_dsb = nullptr;
 	HRESULT hr = p_device->CreateTexture2D(p_dsd, nullptr, &p_dsb);
@@ -109,7 +115,7 @@ ID3D11Texture2D* dx11::cdsb(const D3D11_TEXTURE2D_DESC* p_dsd, ID3D11Device* p_d
 	return p_dsb;
 }
 
-ID3D11DepthStencilView* dx11::cdsv(const D3D11_DEPTH_STENCIL_VIEW_DESC* p_dsvd, ID3D11Texture2D* p_dsb, ID3D11Device* p_device) {
+ID3D11DepthStencilView* engine::dx11::cdsv(const D3D11_DEPTH_STENCIL_VIEW_DESC* p_dsvd, ID3D11Texture2D* p_dsb, ID3D11Device* p_device) {
 	// depth stencil view
 	ID3D11DepthStencilView* p_dsv = nullptr;
 	HRESULT hr = p_device->CreateDepthStencilView(p_dsb, p_dsvd, &p_dsv);

@@ -673,7 +673,7 @@ std::string logger::to_narrow_string(const std::wstring& wide, codes* code_p)
     return temp_buffer_str;
 }
 
-logger::codes logger::vertical_drag(HWND hwnd, WPARAM wParam, int vscroll_position, int yChar)
+logger::codes logger::vertical_drag(HWND hwnd, WPARAM wParam, int* vscroll_position, int yChar)
 {
     // Get all the vertial scroll bar information.
     SCROLLINFO si = {};
@@ -684,7 +684,7 @@ logger::codes logger::vertical_drag(HWND hwnd, WPARAM wParam, int vscroll_positi
     }
 
     // Save the position for comparison later on.
-    vscroll_position = si.nPos;
+    *vscroll_position = si.nPos;
     switch (LOWORD(wParam))
     {
 
@@ -736,9 +736,9 @@ logger::codes logger::vertical_drag(HWND hwnd, WPARAM wParam, int vscroll_positi
     }
 
     // If the position has changed, scroll window and update it.
-    if (si.nPos != vscroll_position)
+    if (si.nPos != *vscroll_position)
     {
-        if (ScrollWindow(hwnd, 0, yChar * (vscroll_position - si.nPos), NULL, NULL) == FALSE) {
+        if (ScrollWindow(hwnd, 0, yChar * (*vscroll_position - si.nPos), NULL, NULL) == FALSE) {
             throw le(codes::scroll_window_fail, scroll_window_fail_description);
         }
     }
@@ -746,7 +746,7 @@ logger::codes logger::vertical_drag(HWND hwnd, WPARAM wParam, int vscroll_positi
     return codes::success;
 }
 
-logger::codes logger::horizontal_drag(HWND hwnd, WPARAM wParam, int hscroll_position,int xChar)
+logger::codes logger::horizontal_drag(HWND hwnd, WPARAM wParam, int* hscroll_position,int xChar)
 {
     SCROLLINFO si = {};
     si.cbSize = sizeof(si);
@@ -755,7 +755,7 @@ logger::codes logger::horizontal_drag(HWND hwnd, WPARAM wParam, int hscroll_posi
         throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
     }
 
-    hscroll_position = si.nPos;
+    *hscroll_position = si.nPos;
     switch (LOWORD(wParam))
     {
         // User clicked the left arrow.
@@ -799,9 +799,9 @@ logger::codes logger::horizontal_drag(HWND hwnd, WPARAM wParam, int hscroll_posi
     }
 
     // If the position has changed, scroll the window.
-    if (si.nPos != hscroll_position)
+    if (si.nPos != *hscroll_position)
     {
-        if (ScrollWindow(hwnd, xChar * (hscroll_position - si.nPos), 0, NULL, NULL) == FALSE) {
+        if (ScrollWindow(hwnd, xChar * (*hscroll_position - si.nPos), 0, NULL, NULL) == FALSE) {
             throw le(codes::scroll_window_fail, scroll_window_fail_description);
         }
 

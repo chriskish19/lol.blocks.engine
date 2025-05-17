@@ -318,13 +318,13 @@ LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARA
 
         case WM_HSCROLL:
         {
-            horizontal_drag(m_handle, wParam, m_hscroll_position, m_xChar);
+            horizontal_drag(m_handle, wParam, &m_hscroll_position, m_xChar);
             break;
         }
 
         case WM_VSCROLL: 
         {
-            vertical_drag(m_handle, wParam, m_vscroll_position, m_yChar);
+            vertical_drag(m_handle, wParam, &m_vscroll_position, m_yChar);
             break;
         }
 

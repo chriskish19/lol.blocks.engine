@@ -1,14 +1,15 @@
 /***********************************************
 * File: sdx11.hpp (setup direct x 11)
 *
+* Purpose: setup direct x 11
 *
-*
-*
+* Project: engine
 *
 ************************************************/
 
 #pragma once
-
+#include ENGINE_NAMES_INCLUDE
+#include ENGINE_ALL_DEPENDS_INCLUDE_PATH
 
 #include LOGGER_NAMES_INCLUDE
 #include LOGGER_ALL_LOGS_INCLUDE_PATH
