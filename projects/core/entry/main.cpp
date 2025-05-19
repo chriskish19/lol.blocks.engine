@@ -32,13 +32,11 @@ int WINAPI wWinMain(
 	_In_ LPWSTR lpCmdLine,
 	_In_ int nShowCmd
 ) {
-	logger::classic_log_window* log_terminal = new logger::classic_log_window;
-	std::jthread lt_thread(&logger::classic_log_window::thread_go, log_terminal);
-
 
 	core::standard_window* window = new core::standard_window;
 	{
 		core::codes code = window->load();
+		core::output_code(code);
 		if (code != core::codes::success) {
 			if (window != nullptr) {
 				delete window;
@@ -68,11 +66,6 @@ int WINAPI wWinMain(
 		window = nullptr;
 	}
 
-	if (log_terminal != nullptr) {
-		delete log_terminal;
-		log_terminal = nullptr;
-	}
-
 	return static_cast<int>(msg.wParam);
 }
 
@@ -84,9 +77,26 @@ int WINAPI wWinMain(
 	_In_ LPWSTR lpCmdLine,
 	_In_ int nShowCmd
 ) {
-	test::classic_log_terminal(30);
-	return 0;
+	logger::glb_sl->get_terminal_p()->wait_until_init();
+
+	logger::codes code = test::classic_log_terminal(10,1);
+	return static_cast<int>(code);
 }
+
+
+// gives a terminal console
+/*
+int main() {
+	// Prepare arguments for wWinMain
+	HINSTANCE hInstance = GetModuleHandle(nullptr);
+	HINSTANCE hPrevInstance = nullptr;
+	LPWSTR lpCmdLine = GetCommandLineW();
+	int nShowCmd = SW_SHOW;
+
+	// Call wWinMain
+	return wWinMain(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
+}
+*/
 
 
 #endif

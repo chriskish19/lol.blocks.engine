@@ -33,22 +33,18 @@
 // dx toolkit 
 // {
 
-// for DDS textures
-#include <DDSTextureLoader.h> 
+#include <DDSTextureLoader.h>	// for DDS textures
+#include <WICTextureLoader.h>	// for PNG, JPEG, BMP, etc. 
+#include <SpriteBatch.h>		// sprites
+#include <Keyboard.h>			// dx keyboard
+#include <Mouse.h>				// mouse movement
+#include <SimpleMath.h>         // Optional: Simplified math wrapper around DirectX::XMMATRIX etc.
+#include <SpriteFont.h>         // For 2D text rendering
+#include <PrimitiveBatch.h>     // For drawing lines and shapes
+#include <GeometricPrimitive.h> // For built-in 3D shapes
+#include <Model.h>              // For loading/rendering .CMO or .VBO models
+#include <Effects.h>            // Common effects (basic lighting, fog, etc.)
+#include <CommonStates.h>       // Predefined blend, rasterizer, depth-stencil states
 
-// for PNG, JPEG, BMP, etc.
-#include <WICTextureLoader.h>  
-
-// sprites
-#include <DirectXTK/SpriteBatch.h>
-
-// dx keyboard
-#include <DirectXTK/Keyboard.h>
-
-// mouse movement
-#include <Mouse.h>
-
-// ??
-#include <DirectXTK/CommonStates.h>
 
 // }

@@ -24,6 +24,7 @@
 // read only string, prepends L""
 #define ROS(x) L##x
 
+#define COUT std::wcout
 namespace core {
 	using string = std::wstring;
 	using character = wchar_t;
@@ -44,5 +45,10 @@ namespace core {
 
 #endif
 
-#define MAIN_ENTRY 0
-#define TEST_ENTRY 1
+
+#define MAIN_ENTRY 1
+#define TEST_ENTRY 0
+
+#define SYS_LOG_OUT 1
+#define STD_COUT 0
+#define VS_OUT_WINDOW 0

@@ -235,6 +235,8 @@ target_link_libraries(${tests}
     d3d11
     dxgi
     d3dcompiler
+    Microsoft::DirectXTK
+    runtimeobject
     ${logs}
     ${engine}
     ${gui}
@@ -246,5 +248,7 @@ target_link_libraries(${core} PUBLIC
 ${gui} 
 ${engine} 
 ${logs} 
-${tests})
+${tests}
+Microsoft::DirectXTK
+runtimeobject)
 

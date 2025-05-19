@@ -9,7 +9,7 @@
 
 #pragma once
 #include LOGGER_NAMES_INCLUDE
-#include LOGGER_WINDOW_LOGGER_INCLUDE_PATH
+#include LOGGER_SYSINIT_INCLUDE_PATH
 
 
 

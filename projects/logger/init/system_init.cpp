@@ -1,4 +1,3 @@
-#include "system_init.hpp"
 /***************************************
 *  File: system_init.cpp (system initialize)
 *
@@ -10,6 +9,19 @@
 #include LOGGER_NAMES_INCLUDE
 #include LOGGER_SYSINIT_INCLUDE_PATH
 
+
+namespace logger {
+#if MANUAL_LOGGER
+	logger::classic_log_window* log_terminal = nullptr;
+	std::thread* lt_thread = nullptr;
+#else
+	// automatic system logger
+	std::unique_ptr<system_log> glb_sl = std::make_unique<system_log>();
+#endif
+}
+
+
+#if MANUAL_LOGGER
 logger::codes logger::init_system_log()
 {
 	try {
@@ -47,7 +59,47 @@ logger::codes logger::exit_system_log()
 
 	if (lt_thread != nullptr) {
 		delete lt_thread;
-		lt_thread == nullptr;
+		lt_thread = nullptr;
+	}
+
+	if (log_terminal != nullptr) {
+		delete log_terminal;
+		log_terminal = nullptr;
+	}
+
+	return codes::success;
+}
+
+#else
+
+logger::system_log::system_log()
+{
+	try {
+		log_terminal = new logger::classic_log_window;
+		lt_thread = new std::thread(&logger::classic_log_window::thread_go, log_terminal);
+	}
+	catch (const logger::le& e) {
+		// logger error
+		CERROR << ROS("DESCRIPTION: ") << e.m_desc << '\n' <<
+			ROS("WINOWS ERROR: ") << e.m_w32 << '\n' <<
+			ROS("LOCATION: ") << e.m_loc;
+	}
+	catch (...) {
+		CERROR << ROS("Unknown exception caught") << '\n' <<
+			ROS("LOCATION: ") << gl();
+	}
+}
+
+logger::system_log::~system_log()
+{
+	*this << ROS("log terminal window waiting to be closed...");
+	
+	if (lt_thread->joinable())
+		lt_thread->join();
+
+	if (lt_thread != nullptr) {
+		delete lt_thread;
+		lt_thread = nullptr;
 	}
 
 	if (log_terminal != nullptr) {
@@ -55,3 +107,5 @@ logger::codes logger::exit_system_log()
 		log_terminal = nullptr;
 	}
 }
+
+#endif

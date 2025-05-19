@@ -13,26 +13,60 @@
 
 logger::codes TEST_API test::classic_log_terminal(std::size_t seconds)
 {
-    logger::classic_log_window* terminal = new logger::classic_log_window;
-    std::thread terminal_thread(&logger::classic_log_window::thread_go, terminal);
-    terminal->wait_until_init();
+#if MANUAL_LOGGER 
 
+    logger::init_system_log();
 
     random data(32, 126);
 
     auto end_time = std::chrono::steady_clock::now() + std::chrono::seconds(seconds);
     while (std::chrono::steady_clock::now() < end_time) {
-        string message = data.random_data_string(LOG_LENGTH - terminal->m_ts_length);
-        terminal->send_message(message);
+        string message = data.random_data_string(LOG_LENGTH - logger::log_terminal->m_ts_length);
+        logger::log_message(message);
     }
 
-    if (terminal_thread.joinable()) {
-        terminal_thread.join();
-    }
+    return logger::exit_system_log();
 
-    if (terminal != nullptr) {
-        delete terminal;
-        terminal = nullptr;
+#else
+
+    random data(32, 126);
+    auto lt_p = logger::glb_sl->get_terminal_p();
+    auto end_time = std::chrono::steady_clock::now() + std::chrono::seconds(seconds);
+    while (std::chrono::steady_clock::now() < end_time) {
+        string message = data.random_data_string(LOG_LENGTH - lt_p->m_ts_length);
+        *logger::glb_sl << message;
     }
     return logger::codes::success;
+#endif
+}
+
+logger::codes TEST_API test::classic_log_terminal(std::size_t seconds, std::size_t pause)
+{
+#if MANUAL_LOGGER
+
+    logger::init_system_log();
+
+    random data(32, 126);
+
+    auto end_time = std::chrono::steady_clock::now() + std::chrono::seconds(seconds);
+    while (std::chrono::steady_clock::now() < end_time) {
+        string message = data.random_data_string(LOG_LENGTH - logger::log_terminal->m_ts_length);
+        logger::log_message(message);
+        std::this_thread::sleep_for(std::chrono::seconds(pause));
+    }
+
+    return logger::exit_system_log();
+
+#else
+
+    random data(32, 126);
+    auto lt_p = logger::glb_sl->get_terminal_p();
+    auto end_time = std::chrono::steady_clock::now() + std::chrono::seconds(seconds);
+    while (std::chrono::steady_clock::now() < end_time) {
+        string message = data.random_data_string(LOG_LENGTH - lt_p->m_ts_length);
+        *logger::glb_sl << message;
+        std::this_thread::sleep_for(std::chrono::seconds(pause));
+    }
+    return logger::codes::success;
+#endif
 }

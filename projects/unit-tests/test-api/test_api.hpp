@@ -28,5 +28,9 @@
 
 
 namespace test {
+	// fast test
 	logger::codes TEST_API classic_log_terminal(std::size_t seconds);
+
+	// slow test
+	logger::codes TEST_API classic_log_terminal(std::size_t seconds, std::size_t pause);
 }

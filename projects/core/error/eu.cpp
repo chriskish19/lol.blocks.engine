@@ -31,3 +31,16 @@ core::string core::match_code(codes code) {
 	}
 }
 
+void core::output_code(codes code, const string& location)
+{
+	logger::string message = core::match_code(code);
+#if SYS_LOG_OUT
+	logger::glb_sl->log_message(message + ROS('\n') + ROS("LOCATION: ") + location);
+#elif STD_COUT
+	COUT << message << '\n' << ROS("LOCATION: ") << location;
+#elif VS_OUT_WINDOW
+	message = message + "\" + location;
+	OutputDebugString(message.c_str());
+#endif
+
+}

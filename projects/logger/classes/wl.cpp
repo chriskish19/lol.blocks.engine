@@ -1,5 +1,3 @@
-#include "wl.hpp"
-
 /***************************************
 *  File: wl.cpp (window logger)
 *
@@ -235,7 +233,7 @@ logger::codes logger::classic_log_window::load()
 
     m_xChar = tm.tmAveCharWidth;
     m_xUpper = (tm.tmPitchAndFamily & 1 ? 3 : 2) * m_xChar / 2;
-    m_yChar = tm.tmHeight + tm.tmExternalLeading;
+    m_yChar = tm.tmHeight + 2;
 
     // Free the device context. 
     ReleaseDC(m_handle, hdc);
@@ -255,7 +253,7 @@ void logger::classic_log_window::send_message(const string& message)
     auto log = log_buffer_p->at(log_foundation.get_index());
 
     // update window
-    InvalidateRect(m_handle, log->window_position , TRUE);
+    InvalidateRect(m_handle, log->window_position , FALSE);
 }
 
 void logger::classic_log_window::thread_go()
@@ -372,8 +370,11 @@ LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARA
                 std::size_t top = wl_rect.top + (counter * m_yChar);
                 counter++;
 
+                // number of "\n"
+                std::size_t line_count = count_new_lines(*log->message);
+
                 // calculate bottoms
-                std::size_t bottom = top + m_yChar;
+                std::size_t bottom = top + (m_yChar * line_count);
 
                 // set rects
                 *log->window_position = RECT(wl_rect.left, top, wl_rect.right, bottom);

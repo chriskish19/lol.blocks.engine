@@ -56,3 +56,9 @@ namespace logger {
 #else
 #define LOGS_API __declspec(dllimport)
 #endif
+
+// auto logger uses the system_log object for logging
+#define AUTO_LOGGER 1
+
+// manual logger uses basic functions for logging
+#define MANUAL_LOGGER 0

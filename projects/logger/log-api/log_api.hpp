@@ -83,4 +83,7 @@ namespace logger{
 
 	// log a CO object to the output window
 	void er_co_out(codes code);
+
+	// returns number of new lines in a string
+	std::size_t count_new_lines(const string& message);
 }

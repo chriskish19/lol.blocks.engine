@@ -921,6 +921,9 @@ logger::string logger::time_stamped(const string& message)
     catch (const std::exception& e) {
         std::cerr << "exception: " << e.what() << std::endl;
     }
+    catch (...) {
+        std::cerr << "unknown exception caught..." << std::endl;
+    }
     // exception thrown we return nothing
     return {};
 }
@@ -930,4 +933,15 @@ void logger::er_co_out(codes code)
     string description = le::match_code(code);
     le log_out(code, description);
     CERROR << log_out.m_desc << "\n" << log_out.m_loc << "\n" << log_out.m_w32 << std::endl;
+}
+
+std::size_t logger::count_new_lines(const string& message)
+{
+    std::size_t new_line_counter = 0;
+    for (auto c : message) {
+        if (c == '\n') {
+            new_line_counter++;
+        }
+    }
+    return new_line_counter;
 }
