@@ -13,7 +13,6 @@
 #include LOGGER_CODES_INCLUDE_PATH
 #include LOGGER_BASE_INCLUDE_PATH
 #include LOGGER_CO_INCLUDE_PATH
-#include LOGGER_LOG_API_INCLUDE_PATH
 
 
 namespace logger {

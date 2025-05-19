@@ -12,3 +12,6 @@
 
 // main windows include
 #include <Windows.h>
+
+
+#include <comdef.h>

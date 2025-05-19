@@ -27,3 +27,8 @@
 // error
 #define ENGINE_CODES_INCLUDE_PATH					ENGINE_codes_hpp						// error codes
 #define ENGINE_DX11ERU_INCLUDE_PATH					ENGINE_e_dx11_u_hpp						// direct x 11 error utilities
+#define ENGINE_CO_INCLUDE_PATH						ENGINE_co_hpp							// code object
+#define ENGINE_CD_INCLUDE_PATH						ENGINE_desc_hpp							// error code descriptions
+
+// api helper
+#define ENGINE_API_INCLUDE_PATH						ENGINE_engine_api_hpp					// helper functions

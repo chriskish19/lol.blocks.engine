@@ -1,5 +1,4 @@
 #include "log_api.hpp"
-
 /***************************************
 *  File: log_api.cpp (logger project helper 
 *        functions)

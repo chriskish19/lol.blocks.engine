@@ -29,3 +29,6 @@
 
 // include all logs headers
 #define LOGGER_ALL_LOGS_INCLUDE_PATH				LOGGER_all_logs_hpp						// includes all headers from logger project
+
+// init
+#define LOGGER_SYSINIT_INCLUDE_PATH					LOGGER_system_init_hpp					// functions for using the logger library

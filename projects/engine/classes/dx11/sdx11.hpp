@@ -8,9 +8,12 @@
 ************************************************/
 
 #pragma once
+// local engine
 #include ENGINE_NAMES_INCLUDE
 #include ENGINE_ALL_DEPENDS_INCLUDE_PATH
+#include ENGINE_DX11ERU_INCLUDE_PATH
 
+// logger lib
 #include LOGGER_NAMES_INCLUDE
 #include LOGGER_ALL_LOGS_INCLUDE_PATH
 

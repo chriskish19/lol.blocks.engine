@@ -23,8 +23,8 @@ engine::dx11::string engine::dx11::hr_ts(HRESULT hr) {
 #if NARROW
 	std::string narrow_temp;
 	{
-		lb::codes code;
-		narrow_temp = lb::to_narrow_string(wide_temp,&code);
+		engine::codes code;
+		narrow_temp = engine::to_narrow_string(wide_temp,&code);
 		output_code(code);
 	}
 	return narrow_temp;
@@ -35,7 +35,7 @@ engine::dx11::string engine::dx11::hr_ts(HRESULT hr) {
 #endif
 }
 
-dx11::string dx11::debug_info_ts(ID3D11InfoQueue* debug_info_p, lol_blocks::codes* code) {
+engine::dx11::string engine::dx11::debug_info_ts(ID3D11InfoQueue* debug_info_p, engine::codes* code) {
 	/*
 
 	typedef struct D3D11_MESSAGE {
@@ -58,7 +58,8 @@ dx11::string dx11::debug_info_ts(ID3D11InfoQueue* debug_info_p, lol_blocks::code
 	hr = debug_info_p->GetMessage(0, pMessage, &messageLength);
 
 	if (pMessage == nullptr) {
-		*code = lb::codes::pointer_is_nullptr;
+		*code = codes::pointer_is_nullptr;
+		
 		return {};
 	}
 
@@ -71,23 +72,23 @@ dx11::string dx11::debug_info_ts(ID3D11InfoQueue* debug_info_p, lol_blocks::code
 
 #if NARROW
 
-	*code = lb::codes::success;
+	*code = codes::success;
 	return temp;
 
 #endif
 
 #if WIDE
 
-	std::wstring temp_wide = lb::to_wide_string(temp,code);
+	std::wstring temp_wide = engine::to_wide_string(temp,code);
 	return temp_wide;
 
 #endif
 
 }
 
-dx11::string dx11::error_blob_ts(ID3DBlob* error, lol_blocks::codes* code) {
+engine::dx11::string engine::dx11::error_blob_ts(ID3DBlob* error, engine::codes* code) {
 	if (error == nullptr) {
-		*code = lb::codes::pointer_is_nullptr;
+		*code = engine::codes::pointer_is_nullptr;
 		return {};
 	}
 
@@ -105,13 +106,12 @@ dx11::string dx11::error_blob_ts(ID3DBlob* error, lol_blocks::codes* code) {
 #endif
 
 #if WIDE
-	std::wstring wide_temp = lb::to_wide_string(temp_error_str,code);
+	std::wstring wide_temp = engine::to_wide_string(temp_error_str,code);
 	return wide_temp;
 #endif
 }
 
-void dx11::st_vs_out(HRESULT hr,string location) {
+void engine::dx11::st_vs_out(HRESULT hr,string location) {
 	string dx_message = hr_ts(hr);
-	string full_message = dx_message + location;
-	OutputDebugString(full_message.c_str());
+	CERROR << ROS("HRESULT: ") << dx_message << '\n' << ROS("LOCATION: ") << location << '\n';
 }

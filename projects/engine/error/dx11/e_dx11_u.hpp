@@ -11,6 +11,8 @@
 #include ENGINE_NAMES_INCLUDE
 #include ENGINE_ALL_DEPENDS_INCLUDE_PATH
 #include ENGINE_CODES_INCLUDE_PATH
+#include ENGINE_API_INCLUDE_PATH
+
 
 
 namespace engine {
@@ -25,6 +27,6 @@ namespace engine {
 		string hr_ts(HRESULT hr);
 
 		// send to visual studio output window
-		void st_vs_out(HRESULT hr, string location = lb::get_location());
+		void st_vs_out(HRESULT hr, string location = engine::gl());
 	}
 }

@@ -9,6 +9,7 @@
 
 #pragma once
 #include ENGINE_NAMES_INCLUDE
+#include ENGINE_ALL_DEPENDS_INCLUDE_PATH
 
 #define MAX_STRING 512
 
@@ -19,6 +20,9 @@
 
 // read only string, prepends L""
 #define ROS(x) L##x
+
+// output error message
+#define CERROR std::wcerr
 
 namespace engine {
 	using string = std::wstring;
@@ -38,6 +42,8 @@ namespace engine {
 
 #else
 
+
+#define CERROR std::cerr
 #define ROS(x) x
 #define NARROW 1
 

@@ -30,5 +30,7 @@ namespace logger {
 		font_nullptr,
 		get_text_metrics_fail,
 		divison_by_zero,
+		logger_exception_caught,
+		unknown_exception_caught,
 	};
 }
