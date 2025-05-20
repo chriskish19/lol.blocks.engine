@@ -18,4 +18,5 @@ namespace engine {
 	inline const character* to_narrow_string_failed_description = ROS("engine code: converting from wide string to narrow has failed.");
 	inline const character* default_match_code_description = ROS("engine code: no matching code found (match_code function called).");
 	inline const character* pointer_is_nullptr_description = ROS("engine code: pointer is'nt pointing to anything, no memory.");
+	inline const character* dx_error_description = ROS("engine code: dx_error | message: direct x error.");
 }

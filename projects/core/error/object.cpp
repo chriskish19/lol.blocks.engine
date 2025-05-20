@@ -11,7 +11,7 @@
 #include CORE_CODE_OBJECT_INCLUDE_PATH
 
 
-std::wstring core::lbe::to_wide(const std::string& narrow)
+std::wstring core::ce::to_wide(const std::string& narrow)
 {
     /*
 
@@ -71,7 +71,7 @@ std::wstring core::lbe::to_wide(const std::string& narrow)
 
         // throw an exception, werid to throw an object inside the object but were inside 
         // a static function so...
-        throw lbe(codes::to_wide_string_failed, to_wide_string_failed_description);
+        throw ce(codes::to_wide_string_failed, to_wide_string_failed_description);
 
         // returns an empty string
         return {};
@@ -100,7 +100,7 @@ core::string core::gl(std::source_location sl)
 
 #if WIDE
     // convert to wide string
-    std::wstring wide_return = lbe::to_wide(temp);
+    std::wstring wide_return = ce::to_wide(temp);
     return wide_return;
 #else
     return temp;

@@ -67,7 +67,7 @@ std::wstring core::to_wide_string(const char* narrow)
         }
 
         // throw an exception
-        throw lbe(codes::to_wide_string_failed, to_wide_string_failed_description);
+        throw ce(codes::to_wide_string_failed, to_wide_string_failed_description);
 
         // returns an empty string
         return {};
@@ -143,7 +143,7 @@ std::wstring core::to_wide_string(const std::string& narrow)
         }
 
         // throw an exception
-        throw lbe(codes::to_wide_string_failed, to_wide_string_failed_description);
+        throw ce(codes::to_wide_string_failed, to_wide_string_failed_description);
 
         // returns an empty string
         return {};
@@ -224,7 +224,7 @@ std::string core::to_narrow_string(const wchar_t* wide)
         }
 
         // throw an exception
-        throw lbe(codes::to_narrow_string_failed, to_narrow_string_failed_description);
+        throw ce(codes::to_narrow_string_failed, to_narrow_string_failed_description);
 
         // returns an empty string
         return {};
@@ -307,7 +307,7 @@ std::string core::to_narrow_string(const std::wstring& wide)
         }
 
         // throw an exception
-        throw lbe(codes::to_narrow_string_failed, to_narrow_string_failed_description);
+        throw ce(codes::to_narrow_string_failed, to_narrow_string_failed_description);
 
         // returns an empty string
         return {};

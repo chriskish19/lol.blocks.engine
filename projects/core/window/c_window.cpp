@@ -1,3 +1,4 @@
+#include "c_window.hpp"
 /***************************************
 *  File: c_window.cpp (core window)
 *
@@ -58,8 +59,31 @@ core::codes core::standard_window::load()
     return codes::success;
 }
 
+UINT core::standard_window::width()
+{
+    RECT rc = {};
+    if (GetClientRect(m_handle, &rc) == FALSE) {
+        throw ce(codes::get_client_rect_fail, get_client_rect_fail_description);
+    }
+
+    return rc.right - rc.left;
+}
+
+UINT core::standard_window::height()
+{
+    RECT rc = {};
+    if (GetClientRect(m_handle, &rc) == FALSE) {
+        throw ce(codes::get_client_rect_fail, get_client_rect_fail_description);
+    }
+
+    return rc.bottom - rc.top;
+}
+
 LRESULT core::standard_window::this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    DirectX::Keyboard::ProcessMessage(uMsg, wParam, lParam);
+    DirectX::Mouse::ProcessMessage(uMsg, wParam, lParam);
+    
     switch (uMsg) {
     case WM_DESTROY:
         PostQuitMessage(0);

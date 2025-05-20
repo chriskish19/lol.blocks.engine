@@ -700,6 +700,72 @@ engine::string engine::match_code(codes code)
     }
 }
 
+engine::dx11::cube engine::create_cube(dx11::size sz, dx11::position p)
+{
+    engine::dx11::size_f wc = sz.convert_wc();
+    engine::dx11::cube cb = {};
+
+    float x = p.x;
+    float y = p.y;
+    float z = p.z;
+
+    float sx = wc.szf_x;
+    float sy = wc.szf_y;
+    float szf = wc.szf_z;
+
+    // Define 8 corners of the cube
+    DirectX::XMFLOAT3 v000(x, y, z);                    // front top left
+    DirectX::XMFLOAT3 v001(x, y, z + szf);              // back top left
+    DirectX::XMFLOAT3 v010(x, y - sy, z);               // front bottom left
+    DirectX::XMFLOAT3 v011(x, y - sy, z + szf);         // back bottom left
+    DirectX::XMFLOAT3 v100(x + sx, y, z);               // front top right
+    DirectX::XMFLOAT3 v101(x + sx, y, z + szf);         // back top right
+    DirectX::XMFLOAT3 v110(x + sx, y - sy, z);          // front bottom right
+    DirectX::XMFLOAT3 v111(x + sx, y - sy, z + szf);    // back bottom right
+
+    // Front face (z)
+    cb.faces[0].faces[0] = { v000, v010, v100 };
+    cb.faces[0].faces[1] = { v100, v010, v110 };
+
+    // Back face (-z)
+    cb.faces[1].faces[0] = { v101, v111, v001 };
+    cb.faces[1].faces[1] = { v001, v111, v011 };
+
+    // Left face (-x)
+    cb.faces[2].faces[0] = { v001, v011, v000 };
+    cb.faces[2].faces[1] = { v000, v011, v010 };
+
+    // Right face (+x)
+    cb.faces[3].faces[0] = { v100, v110, v101 };
+    cb.faces[3].faces[1] = { v101, v110, v111 };
+
+    // Top face (+y)
+    cb.faces[4].faces[0] = { v000, v100, v001 };
+    cb.faces[4].faces[1] = { v001, v100, v101 };
+
+    // Bottom face (-y)
+    cb.faces[5].faces[0] = { v010, v011, v110 };
+    cb.faces[5].faces[1] = { v110, v011, v111 };
+
+    return cb;
+}
+
+std::vector<DirectX::XMFLOAT3> engine::cube_to_vb(const dx11::cube& cb)
+{
+    std::vector<DirectX::XMFLOAT3> vertices;
+
+    for (int face = 0; face < engine::dx11::cube::size; ++face) {
+        for (int tri = 0; tri < engine::dx11::square::size; ++tri) {
+            const auto& t = cb.faces[face].faces[tri];
+            vertices.push_back(t.v1);
+            vertices.push_back(t.v2);
+            vertices.push_back(t.v3);
+        }
+    }
+
+    return vertices;
+}
+
 engine::string engine::gl(std::source_location sl)
 {
     std::string function_name = sl.function_name();

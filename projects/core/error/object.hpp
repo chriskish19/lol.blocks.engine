@@ -17,11 +17,11 @@ namespace core {
 	// get location information
 	string gl(std::source_location sl = std::source_location::current());
 
-	// lol.blocks.error
-	class lbe : public std::exception{
+	// core error
+	class ce : public std::exception{
 	public:
-		lbe() = default;
-		lbe(codes code, const string& desc, const string& location = gl() )
+		ce() = default;
+		ce(codes code, const string& desc, const string& location = gl() )
 			: m_code(code), m_desc(desc), m_loc(location) { }
 
 

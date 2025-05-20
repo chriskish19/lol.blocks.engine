@@ -12,6 +12,12 @@
 #include CORE_CODES_INCLUDE_PATH
 #include CORE_WIN_INCLUDE_PATH
 #include CORE_STL_INCLUDE_PATH
+#include CORE_CODE_OBJECT_INCLUDE_PATH
+
+// engine library
+#include ENGINE_NAMES_INCLUDE
+#include ENGINE_ALL_ENGINE_INCLUDE_PATH
+
 
 namespace core {
 	struct window_description {
@@ -48,6 +54,11 @@ namespace core {
 
 		// initialize the window
 		codes load();
+
+		HWND handle() { return m_handle; }
+		UINT width();
+		UINT height();
+
 	protected:
 		// window handle
 		HWND m_handle = nullptr;

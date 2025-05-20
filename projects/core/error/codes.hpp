@@ -20,6 +20,7 @@ namespace core {
 		to_narrow_string_failed,
 		string_length_too_long,
 		match_code_default,
-		
+		get_client_rect_fail,
+
 	};
 }

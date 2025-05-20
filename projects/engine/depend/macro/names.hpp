@@ -32,3 +32,27 @@
 
 // api helper
 #define ENGINE_API_INCLUDE_PATH						ENGINE_engine_api_hpp					// helper functions
+
+
+
+
+// dx11 demo {
+
+#define ENGINE_DX11_DEMO_INCLUDE_PATH						ENGINE_dx11_d_hpp						// all dx11 demos
+#define ENGINE_DX11_DEMO_SHAPES_INCLUDE_PATH				ENGINE_shapes_hpp						// simple shape drawing
+
+// dx11 demo shaders
+#define ENGINE_TDDX11VS_FILE_PATH							ENGINE_td_dx11_vs_hlsl					// (triangle demo direct x 11 vertex shader)
+#define ENGINE_TDDX11PS_FILE_PATH							ENGINE_td_dx11_ps_hlsl					// (triangle demo direct x 11 pixel shader)
+#define ENGINE_TXDDX11VS_FILE_PATH							ENGINE_txd_dx11_vs_hlsl					// (texture demo direct x 11 vertex shader)
+#define ENGINE_TXDDX11PS_FILE_PATH							ENGINE_txd_dx11_ps_hlsl					// (texture demo direct x 11 pixel shader)
+#define ENGINE_CDDX11VS_FILE_PATH							ENGINE_cd_dx11_vs_hlsl					// (camera demo direct x 11 vertex shader)
+#define ENGINE_CDDX11PS_FILE_PATH							ENGINE_cd_dx11_ps_hlsl					// (camera demo direct x 11 pixel shader)
+#define ENGINE_CBDDX11VS_FILE_PATH							ENGINE_cbd_dx11_vs_hlsl					// (cube demo direct x 11 vertex shader)
+#define ENGINE_CBDDX11PS_FILE_PATH							ENGINE_cbd_dx11_ps_hlsl					// (cube demo direct x 11 pixel shader)
+
+// dx11 demo textures
+#define ENGINE_TX_GRAPH										ENGINE_graph_png
+#define ENGINE_TX_STICK										ENGINE_stick_png						// stickman sprite
+
+// }

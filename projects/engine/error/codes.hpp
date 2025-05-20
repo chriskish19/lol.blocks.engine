@@ -16,6 +16,6 @@ namespace engine {
 		to_narrow_string_failed,
 		default_match_code,
 		pointer_is_nullptr,
-
+		dx_error,
 	};
 }

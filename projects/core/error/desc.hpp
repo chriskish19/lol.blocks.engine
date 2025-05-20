@@ -20,5 +20,5 @@ namespace core {
 	inline const character* to_narrow_string_failed_description = ROS("core code: converting from wide string to narrow has failed.");
 	inline const character* string_length_too_long_description = ROS("core code: string length exceeds avaliable memory or predefined limit.");
 	inline const character* match_code_default_description = ROS("core code: unable to match code");
-
+	inline const character* get_client_rect_fail_description = ROS("core code: get_client_rect_fail | message: unable to retrieve the client rect from the given window handle.");
 }

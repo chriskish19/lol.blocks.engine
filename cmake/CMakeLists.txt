@@ -34,6 +34,11 @@ endif()
 
 # set unicode globally
 add_compile_definitions(-DUNICODE -D_UNICODE)
+set(UNICODE_DEFINED ON)
+
+#############################
+# Core exe
+#############################
 
 # get core source and header files
 file(GLOB_RECURSE core_sf "../projects/core/*.cpp") # core_sf (core source files)
@@ -57,7 +62,16 @@ foreach(HEADER_FILE ${core_hf})
         target_compile_definitions(${core} PRIVATE -DCORE_NAMES_INCLUDE=${FILE_NAME_HPP})
     endif()
 endforeach()
+#############################
+# End of Core exe
+#############################
 
+
+
+
+#############################
+# Logger library
+#############################
 
 # logger is linked lib (dll)
 # get logger source and headers
@@ -98,8 +112,15 @@ target_link_libraries(${logs}
     comdlg32
     advapi32
 )
+#############################
+# End of Logger library
+#############################
 
 
+
+#############################
+# Engine library
+#############################
 
 # directx toolkit
 find_package(directxtk CONFIG REQUIRED)
@@ -131,6 +152,35 @@ foreach(HEADER_FILE ${engine_hf})
     endif()
 endforeach()
 
+
+# for DX11 DEMOS
+# creates macros for each resource (full file path)
+file(GLOB_RECURSE ed_dx11_rs "../projects/engine/demos/dx11/resources/*")
+foreach(ENGINE_RESOURCE ${ed_dx11_rs})
+    # gets the name from ENGINE_RESOURCE, ENGINE_RESOURCE is the full path from C:
+    get_filename_component(FILE_NAME ${ENGINE_RESOURCE} NAME_WE)
+    
+    # gets the extension from ENGINE_RESOURCE
+    get_filename_component(FILE_EXT ${ENGINE_RESOURCE} EXT)
+    
+    if(UNICODE_DEFINED AND NOT (${FILE_EXT} STREQUAL ".h" OR ${FILE_EXT} STREQUAL ".hpp"))
+        # full file path in the variable ENGINE_RESOURCE_FILE_PATH
+        set(ENGINE_RESOURCE_FILE_PATH "L\"${ENGINE_RESOURCE}\"")
+    else()
+        # full file path in the variable ENGINE_RESOURCE_FILE_PATH
+        set(ENGINE_RESOURCE_FILE_PATH "\"${ENGINE_RESOURCE}\"")
+    endif()
+
+    # get rid of the dot and replace it with _
+    string(REPLACE "." "_" FILE_EXT ${FILE_EXT})
+
+    # the macro name
+    set(ENGINE_RESOURCE_NAME "ENGINE_${FILE_NAME}${FILE_EXT}")
+    
+    # set the macro to the file path
+    target_compile_definitions(${engine} PUBLIC -D${ENGINE_RESOURCE_NAME}=${ENGINE_RESOURCE_FILE_PATH})
+endforeach()
+
 # link win32 and dx libraries to engine
 target_link_libraries(${engine}
     PRIVATE
@@ -149,8 +199,15 @@ target_link_libraries(${engine}
     runtimeobject
     ${logs}
 )
+#############################
+# End of Engine library
+#############################
 
 
+
+#############################
+# Gui library
+#############################
 
 # gui is linked lib (dll)
 # get gui source and headers
@@ -193,6 +250,15 @@ target_link_libraries(${gui}
     ${logs}
 )
 
+#############################
+# End of Gui library
+#############################
+
+
+
+#############################
+# Test library
+#############################
 
 # tests is linked lib
 # get tests source and header files
@@ -242,6 +308,9 @@ target_link_libraries(${tests}
     ${gui}
 )
 
+#############################
+# End of Test library
+#############################
 
 # link libs to core
 target_link_libraries(${core} PUBLIC 

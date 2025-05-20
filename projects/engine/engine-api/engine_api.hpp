@@ -10,7 +10,7 @@
 #include ENGINE_NAMES_INCLUDE
 #include ENGINE_ALL_DEPENDS_INCLUDE_PATH
 #include ENGINE_CO_INCLUDE_PATH
-
+#include ENGINE_DX11_DEMO_SHAPES_INCLUDE_PATH
 
 
 namespace engine {
@@ -36,11 +36,24 @@ namespace engine {
 	// }
 
 	// gets the location of the caller function
-	string gl(std::source_location sl = std::source_location::current());
+	string ENGINE_API gl(std::source_location sl = std::source_location::current());
 
 	// outputs the code message
-	void output_code(codes code,const string& location = gl());
+	void ENGINE_API output_code(codes code,const string& location = gl());
 
 	// matches a code to a description
 	string match_code(codes code);
+
+
+
+
+	// simple drawing functions {
+
+	// create a cube from a position and size
+	dx11::cube create_cube(dx11::size sz, dx11::position p);
+
+	// cube to vertex buffer, organizes a cube to be read as a vertex buffer
+	std::vector<DirectX::XMFLOAT3> cube_to_vb(const dx11::cube& cb);
+
+	// }
 }
