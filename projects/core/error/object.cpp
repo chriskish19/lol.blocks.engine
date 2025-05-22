@@ -106,3 +106,28 @@ core::string core::gl(std::source_location sl)
     return temp;
 #endif
 }
+
+core::string core::get_w32_error()
+{
+    DWORD errorMessageID = ::GetLastError();
+    if (errorMessageID == 0)
+        return ROS("No windows error."); // No error has occurred
+
+    character_p messageBuffer = nullptr;
+
+    // Format the error message from the system
+    size_t size = FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        nullptr, errorMessageID,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (character_p)&messageBuffer, 0, nullptr);
+
+    string message(messageBuffer, size);
+
+    // Free the buffer allocated by FormatMessage
+    LocalFree(messageBuffer);
+
+    return message;
+}

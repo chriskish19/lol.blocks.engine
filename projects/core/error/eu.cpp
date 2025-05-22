@@ -26,6 +26,12 @@ core::string core::match_code(codes code) {
 			return to_narrow_string_failed_description;
 		case codes::string_length_too_long:
 			return string_length_too_long_description;
+		case codes::get_client_rect_fail:
+			return get_client_rect_fail_description;
+		case codes::unknown_exception_caught:
+			return unknown_exception_caught_description;
+		case codes::std_exception_caught:
+			return std_exception_caught_description;
 		default:
 			return match_code_default_description;
 	}
@@ -36,10 +42,28 @@ void core::output_code(codes code, const string& location)
 	logger::string message = core::match_code(code);
 #if SYS_LOG_OUT
 	logger::glb_sl->log_message(message + ROS('\n') + ROS("LOCATION: ") + location);
-#elif STD_COUT
+#endif
+#if STD_COUT
 	COUT << message << '\n' << ROS("LOCATION: ") << location;
-#elif VS_OUT_WINDOW
-	message = message + "\" + location;
+#endif
+#if VS_OUT_WINDOW
+	message = message + "\n" + location;
+	OutputDebugString(message.c_str());
+#endif
+
+}
+
+void core::output_co(const core::ce& e)
+{
+#if SYS_LOG_OUT
+	logger::glb_sl->log_message(e.m_desc + ROS('\n') + ROS("LOCATION: ") + e.m_loc + ROS('\n') + ROS("WIN32 ERROR: ") + e.m_w32);
+#endif
+#if STD_COUT
+	COUT << e.m_desc << '\n' << ROS("LOCATION: ") << e.m_loc << '\n' << ROS("WIN32 ERROR: ") << e.m_w32;
+#endif
+#if VS_OUT_WINDOW
+	string message;
+	message = e.m_desc + ROS('\n') + ROS("LOCATION: ") + e.m_loc + ROS('\n') + ROS("WIN32 ERROR: ") + e.m_w32;
 	OutputDebugString(message.c_str());
 #endif
 
