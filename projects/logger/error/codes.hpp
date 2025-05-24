@@ -32,5 +32,7 @@ namespace logger {
 		divison_by_zero,
 		logger_exception_caught,
 		unknown_exception_caught,
+		pointer_is_nullptr,
+		index_out_of_range,
 	};
 }

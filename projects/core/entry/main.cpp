@@ -81,8 +81,7 @@ int WINAPI wWinMain(
 	}
 	catch (const engine::ee& e) {
 		// engine lib error exception
-		  
-
+		engine::output_co(e);
 		return static_cast<int>(e.m_code);
 	}
 	catch (const std::exception& e) {

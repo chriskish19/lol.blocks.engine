@@ -1,3 +1,4 @@
+#include "base.hpp"
 /***************************************
 *  File: base.cpp
 *
@@ -14,7 +15,7 @@ logger::base::base(std::size_t nol) {
 	m_logs_v = new std::vector<log*>;
 	m_logs_v->reserve(nol);
 	for (std::size_t i = 0; i < nol; ++i) {
-		m_logs_v->push_back(new log());
+		m_logs_v->push_back(new log(i));
 	}
 }
 
@@ -35,17 +36,38 @@ logger::base::~base()
 void logger::base::set_message(const string& message)
 {
 	// get current log message
-	auto current_log = m_logs_v->at(m_index);
+	auto current_log = m_logs_v->at(m_v_index);
 
 	// copy
 	*current_log->message = time_stamped(message);
 
 	// cycle
-	if (m_index < (m_logs_v->size() - 1)) {
-		m_index++;
+	if (m_v_index < (m_logs_v->size() - 1)) {
+		// next log
+		m_v_index++;
+
+		// current log
+		m_c_index = m_v_index - 1;
 	}
 	else {
 		// reset
-		m_index = 0;
+		m_v_index = 0;
 	}
+}
+
+logger::string logger::base::time_stamped(const string& message)
+{
+	try {
+		auto now = std::chrono::system_clock::now();
+		string time = std::format(ROS("[{}]"), now);
+		return time + message;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "exception: " << e.what() << std::endl;
+	}
+	catch (...) {
+		std::cerr << "unknown exception caught..." << std::endl;
+	}
+	// exception thrown we return nothing
+	return {};
 }

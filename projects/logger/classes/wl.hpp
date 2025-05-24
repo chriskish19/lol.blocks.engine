@@ -13,6 +13,7 @@
 #include LOGGER_CODES_INCLUDE_PATH
 #include LOGGER_BASE_INCLUDE_PATH
 #include LOGGER_CO_INCLUDE_PATH
+#include LOGGER_LOG_API_INCLUDE_PATH
 
 
 namespace logger {
@@ -101,8 +102,8 @@ namespace logger {
 		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
 		// scrolling
-		int m_nol = LOGGER_LINES; 
-		int m_yChar = 0;
+		int m_nol = LOGGER_LINES - 1; 
+		int m_yChar = LOGGER_FONT_SIZE + 2;
 		int m_xChar = 0;
 		int m_xClientMax = 0;
 		int m_font_size = LOGGER_FONT_SIZE;

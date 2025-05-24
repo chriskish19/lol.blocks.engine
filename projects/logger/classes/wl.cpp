@@ -245,15 +245,12 @@ logger::codes logger::classic_log_window::load()
 
 void logger::classic_log_window::send_message(const string& message)
 {
-    std::lock_guard<std::mutex> local_lock(m_message_mtx);
-    
-    log_foundation.set_message(message);
+    {
+        std::lock_guard<std::mutex> local_lock(m_message_mtx);
+        log_foundation.set_message(message);
+    }
 
-    auto log_buffer_p = log_foundation.get_buffer();
-    auto log = log_buffer_p->at(log_foundation.get_index());
-
-    // update window
-    InvalidateRect(m_handle, log->window_position , FALSE);
+    UpdateWindow(m_handle);
 }
 
 void logger::classic_log_window::thread_go()
@@ -295,101 +292,95 @@ std::size_t logger::classic_log_window::get_time_length()
 }
 
 LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    switch (uMsg) {
-        case WM_SHOWWINDOW:
-        {
-            // window logger window was successfully created
-            if (hwnd == m_handle) {
-
-                // tell waiting thread its safe to procceed...
-                m_wait_b.store(true);
-                m_wait_cv.notify_all();
-            }
-            break;
-        }
     
-        case WM_SIZE:
-        {
-            window_size_change(m_handle, lParam, m_nol, m_yChar, m_xChar, m_xClientMax);
-            break;
-        }
 
-        case WM_HSCROLL:
-        {
-            horizontal_drag(m_handle, wParam, &m_hscroll_position, m_xChar);
-            break;
-        }
+    try {
+        switch (uMsg) {
+            case WM_SHOWWINDOW:
+            {
+                // window logger window was successfully created
+                if (hwnd == m_handle) {
 
-        case WM_VSCROLL: 
-        {
-            vertical_drag(m_handle, wParam, &m_vscroll_position, m_yChar);
-            break;
-        }
-
-        case WM_PAINT:
-        {
-            std::lock_guard<std::mutex> local_lock(m_message_mtx);
-            
-            RECT wl_rect = {};
-            if (GetClientRect(hwnd, &wl_rect) == FALSE) {
-                er_co_out(codes::get_client_rect_fail);
-            }
-
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hwnd, &ps);
-
-            // get a si object
-            SCROLLINFO si = {};
-
-            // Get vertical scroll bar position.
-            si.cbSize = sizeof(si);
-            si.fMask = SIF_POS;
-            GetScrollInfo(hwnd, SB_VERT, &si);
-            m_vscroll_position = si.nPos;
-
-            // Get horizontal scroll bar position.
-            GetScrollInfo(hwnd, SB_HORZ, &si);
-            m_hscroll_position = si.nPos;
-
-            FillRect(hdc, &wl_rect, (HBRUSH)(COLOR_WINDOW + 1));
-
-            // number of lines to print
-            std::size_t nol_to_p = static_cast<std::size_t>((wl_rect.bottom - wl_rect.top) / m_yChar);
-
-            std::size_t first_line = m_vscroll_position;
-            std::size_t last_line = first_line + nol_to_p;
-
-            auto log_buffer = log_foundation.get_buffer();
-
-            std::size_t counter = 0;
-            for (std::size_t i = first_line; i < last_line and i < log_buffer->size(); ++i) {
-                // get log
-                auto log = log_buffer->at(i);
-
-                // calculate tops
-                std::size_t top = wl_rect.top + (counter * m_yChar);
-                counter++;
-
-                // number of "\n"
-                std::size_t line_count = count_new_lines(*log->message);
-
-                // calculate bottoms
-                std::size_t bottom = top + (m_yChar * line_count);
-
-                // set rects
-                *log->window_position = RECT(wl_rect.left, top, wl_rect.right, bottom);
-
-                // write to terminal window
-                codes code = send_text(hdc, log->message, *log->window_position);
-                if (code != codes::success) {
-                    er_co_out(code);
+                    // tell waiting thread its safe to procceed...
+                    m_wait_b.store(true);
+                    m_wait_cv.notify_all();
                 }
+                break;
             }
 
-            EndPaint(hwnd, &ps);
-            break;
-        }
+            case WM_SIZE:
+            {
+                logger::codes code = window_size_change(m_handle, lParam, m_nol, m_yChar, m_xChar, m_xClientMax);
+                if (code != logger::codes::success) {
+                    throw le(code, le::match_code(code));
+                }
+                break;
+            }
+
+            case WM_HSCROLL:
+            {
+                horizontal_drag(m_handle, wParam, &m_hscroll_position, m_xChar);
+                break;
+            }
+
+            case WM_VSCROLL:
+            {
+                vertical_drag(m_handle, wParam, &m_vscroll_position, m_yChar);
+                break;
+            }
+
+            case WM_PAINT:
+            {
+                std::lock_guard<std::mutex> local_lock(m_message_mtx);
+
+                RECT wl_rect = {};
+                if (GetClientRect(hwnd, &wl_rect) == FALSE) {
+                    throw le(codes::get_client_rect_fail, get_client_rect_fail_description);
+                }
+
+                auto log_buffer = log_foundation.get_buffer();
+
+                std::size_t window_height = wl_rect.bottom - wl_rect.top;
+                std::size_t logs_to_print = calculate_logs_to_print(log_buffer, m_vscroll_position, window_height);
+
+                std::size_t first_line = m_vscroll_position;
+                std::size_t last_line = m_vscroll_position + logs_to_print;
+
+                build_rects(log_buffer, first_line, last_line, &wl_rect);
+
+                PAINTSTRUCT ps;
+                HDC hdc = BeginPaint(hwnd, &ps);
+                FillRect(hdc, &wl_rect, (HBRUSH)(COLOR_WINDOW + 1));
+
+                for (std::size_t i = first_line; i < last_line and i < log_buffer->size(); ++i) {
+                    // get log
+                    auto log = log_buffer->at(i);
+
+                    // write to terminal window
+                    logger::codes code = send_text(hdc, log->message, log->window_position);
+                    if (code != codes::success) {
+                        throw le(code, le::match_code(code));
+                    }
+                }
+
+                EndPaint(hwnd, &ps);
+                
+                break;
+            }
+        } // end of switch
     }
+    catch (const logger::le& e) {
+        string output = ROS("DESCRIPTION: ") + e.m_desc + ROS('\n') + ROS("WINDOWS ERROR: ") + e.m_w32
+            + ROS('\n') + ROS("LOCATION: ") + e.m_loc + ROS('\n');
+        OutputDebugString(output.c_str());
+    }
+    catch (...) {
+        logger::le e(logger::codes::unknown_exception_caught, unknown_exception_caught_description);
+        string output = ROS("DESCRIPTION: ") + e.m_desc + ROS('\n') + ROS("WINDOWS ERROR: ") + e.m_w32
+            + ROS('\n') + ROS("LOCATION: ") + e.m_loc + ROS('\n');
+        OutputDebugString(output.c_str());
+    }
+
 
     return logger::window::this_window_proc(hwnd, uMsg, wParam, lParam);
 }

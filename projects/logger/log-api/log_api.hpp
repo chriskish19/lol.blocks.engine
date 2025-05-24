@@ -10,6 +10,7 @@
 #include LOGGER_NAMES_INCLUDE
 #include LOGGER_DEPENDS_INCLUDE_PATH
 #include LOGGER_CO_INCLUDE_PATH
+#include LOGGER_BASE_INCLUDE_PATH
 
 
 namespace logger{
@@ -68,22 +69,27 @@ namespace logger{
 	// HWND window : window handle
 	// const string& message : text message to display
 	// RECT position : the position in the window to display the text
-	codes send_text(HWND window,const string* message,RECT position);
+	codes send_text(HWND window,const string* message,RECT* position);
 
 	// send text to a window
 	// HDC hdc : handle to device context
 	// const string& message : text message to display
 	// RECT position : the position in the window to display the text
-	codes send_text(HDC hdc,const string* message, RECT position);
+	codes send_text(HDC hdc,const string* message, RECT* position);
 
 
 	// simple time stamp a message
 	// returns the message with a time on it ([2025-05-09-14:00:30...])
 	string time_stamped(const string& message);
 
-	// log a CO object to the output window
+	// log a CO object to the terminal
 	void er_co_out(codes code);
 
 	// returns number of new lines in a string
 	std::size_t count_new_lines(const string& message);
+
+
+	std::size_t calculate_logs_to_print(std::vector<log*>* vl_p, std::size_t s_index, std::size_t window_height);
+
+	void build_rects(std::vector<log*>* vl_p, std::size_t s_index, std::size_t e_index,RECT* window);
 }

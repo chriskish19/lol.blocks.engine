@@ -674,12 +674,23 @@ std::string engine::to_narrow_string(const std::wstring& wide, codes* code_p)
 
 void engine::output_code(codes code, const string& location)
 {
+#if !ALL_CODES_LOGGED
     if (code == codes::success) {
         return;
     }
-    
-    string message = match_code(code);
-    CERROR << ROS("ENGINE MESSAGE: ") << message << '\n' << ROS("LOCATION: ") << location;
+#endif  
+
+    logger::string message = engine::match_code(code);
+#if SYS_LOG_OUT
+    logger::glb_sl->log_message(message + ROS('\n') + ROS("LOCATION: ") + location);
+#endif
+#if STD_COUT
+    COUT << message << '\n' << ROS("LOCATION: ") << location;
+#endif
+#if VS_OUT_WINDOW
+    message = message + "\n" + location;
+    OutputDebugString(message.c_str());
+#endif
 }
 
 engine::string engine::match_code(codes code)
@@ -698,6 +709,21 @@ engine::string engine::match_code(codes code)
     default:
         return default_match_code_description;
     }
+}
+
+void engine::output_co(const engine::ee& e)
+{
+#if SYS_LOG_OUT
+    logger::glb_sl->log_message(e.m_desc + ROS('\n') + ROS("LOCATION: ") + e.m_loc);
+#endif
+#if STD_COUT
+    COUT << e.m_desc << '\n' << ROS("LOCATION: ") << e.m_loc;
+#endif
+#if VS_OUT_WINDOW
+    string message;
+    message = e.m_desc + ROS('\n') + ROS("LOCATION: ") + e.m_loc;
+    OutputDebugString(message.c_str());
+#endif
 }
 
 engine::dx11::cube engine::create_cube(dx11::size sz, dx11::position p)

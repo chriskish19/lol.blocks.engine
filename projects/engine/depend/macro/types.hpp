@@ -60,3 +60,11 @@ namespace engine {
 #else
 #define ENGINE_API __declspec(dllimport)
 #endif
+
+// terminal macros
+#define ENGINE_SYS_LOG_OUT 1
+#define ENGINE_STD_COUT 0
+#define ENGINE_VS_OUT_WINDOW 1
+
+// logs all codes including errors and success
+#define ENGINE_ALL_CODES_LOGGED 1

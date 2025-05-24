@@ -740,6 +740,14 @@ logger::codes logger::vertical_drag(HWND hwnd, WPARAM wParam, int* vscroll_posit
         if (ScrollWindow(hwnd, 0, yChar * (*vscroll_position - si.nPos), NULL, NULL) == FALSE) {
             throw le(codes::scroll_window_fail, scroll_window_fail_description);
         }
+
+        if (InvalidateRect(hwnd, nullptr, TRUE) == FALSE) {
+            throw le(codes::invalidate_rect_fail, invalidate_rect_fail_description);
+        }
+
+        if (UpdateWindow(hwnd) == FALSE) {
+            throw le(codes::update_window_fail, update_window_fail_description);
+        }
     }
 
     return codes::success;
@@ -855,7 +863,7 @@ logger::codes logger::window_size_change(HWND hwnd, LPARAM lParam, int nol, int 
     return codes::success;
 }
 
-logger::codes logger::send_text(HWND window, const string* message, RECT position)
+logger::codes logger::send_text(HWND window, const string* message, RECT* position)
 {
     // win32 api function
     /*
@@ -869,6 +877,9 @@ logger::codes logger::send_text(HWND window, const string* message, RECT positio
     );
     
     */
+    if (message == nullptr or position == nullptr) {
+        return logger::codes::pointer_is_nullptr;
+    }
 
     if (window == nullptr) {
         return codes::hwnd_error;
@@ -880,14 +891,14 @@ logger::codes logger::send_text(HWND window, const string* message, RECT positio
         return codes::hdc_error;
     }
 
-    int text_height = DrawText(hdc, message->c_str(), -1, &position, DT_LEFT | DT_TOP);
+    int text_height = DrawText(hdc, message->c_str(), -1, position, NULL);
     
     ReleaseDC(window, hdc);
 
     return (text_height > 0) ? codes::success : codes::draw_text_error;
 }
 
-logger::codes logger::send_text(HDC hdc,const string* message, RECT position)
+logger::codes logger::send_text(HDC hdc,const string* message, RECT* position)
 {
     // win32 api function
     /*
@@ -906,7 +917,11 @@ logger::codes logger::send_text(HDC hdc,const string* message, RECT position)
         return codes::hdc_error;
     }
 
-    int text_height = DrawText(hdc, message->c_str(), -1, &position, DT_LEFT);
+    if (message == nullptr or position == nullptr) {
+        return logger::codes::pointer_is_nullptr;
+    }
+
+    int text_height = DrawText(hdc, message->c_str(), -1, position, NULL);
 
     return (text_height > 0) ? codes::success : codes::draw_text_error;
 }
@@ -944,4 +959,70 @@ std::size_t logger::count_new_lines(const string& message)
         }
     }
     return new_line_counter;
+}
+
+std::size_t logger::calculate_logs_to_print(std::vector<log*>* vl_p, std::size_t s_index, std::size_t window_height)
+{
+    if (vl_p == nullptr) {
+        throw le(logger::codes::pointer_is_nullptr, pointer_is_nullptr_description);
+    }
+
+    if (s_index > vl_p->size()) {
+        throw le(logger::codes::index_out_of_range, index_out_of_range_description);
+    }
+
+    std::size_t line_counter = 0;
+    std::size_t max_bottom = 0;
+    std::size_t single_lines = window_height / (LOGGER_FONT_SIZE + 2) + s_index;
+    for (std::size_t i = s_index; i < single_lines and i < vl_p->size(); ++i) {
+        auto log = vl_p->at(i);
+
+        if (log->message->empty()) {
+            break;
+        }
+
+        // add up bottoms until its greater than window_height
+        max_bottom += log->window_position->bottom;
+
+        line_counter++;
+
+        if (max_bottom >= window_height) {
+            break;
+        }
+    }
+
+    if (max_bottom > window_height) {
+        // go back one line
+        line_counter--;
+    }
+
+    return line_counter;
+}
+
+void logger::build_rects(std::vector<log*>* vl_p, std::size_t s_index, std::size_t e_index, RECT* window)
+{
+    if (vl_p == nullptr or window == nullptr) {
+        throw le(logger::codes::pointer_is_nullptr, pointer_is_nullptr_description);
+    }
+
+    if (s_index > vl_p->size() or e_index > vl_p->size()) {
+        throw le(logger::codes::index_out_of_range, index_out_of_range_description);
+    }
+
+    RECT last = {*window};
+    for (std::size_t i = s_index; i < e_index; ++i) {
+        auto log = vl_p->at(i);
+
+        if (log->message->empty()) {
+            break;
+        }
+
+        std::size_t total_lines = count_new_lines(*log->message) + 1;
+
+        std::size_t height = total_lines * (LOGGER_FONT_SIZE + 2);
+
+        last = RECT(window->left, window->top + last.bottom, window->right, window->bottom + height);
+
+        *log->window_position = last;
+    }
 }

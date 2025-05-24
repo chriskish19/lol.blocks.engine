@@ -12,6 +12,9 @@
 #include ENGINE_CO_INCLUDE_PATH
 #include ENGINE_DX11_DEMO_SHAPES_INCLUDE_PATH
 
+// logger lib
+#include LOGGER_NAMES_INCLUDE
+#include LOGGER_ALL_LOGS_INCLUDE_PATH
 
 namespace engine {
 	// string conversions, if max_string_buffer is exceeded
@@ -44,7 +47,10 @@ namespace engine {
 	// matches a code to a description
 	string match_code(codes code);
 
-
+	// send data to terminal
+	// depends on macro definitions which terminal
+	// see macro/types.hpp
+	void ENGINE_API output_co(const engine::ee& e);
 
 
 	// simple drawing functions {

@@ -40,13 +40,13 @@ core::string core::match_code(codes code) {
 void core::output_code(codes code, const string& location)
 {
 	logger::string message = core::match_code(code);
-#if SYS_LOG_OUT
+#if CORE_SYS_LOG_OUT
 	logger::glb_sl->log_message(message + ROS('\n') + ROS("LOCATION: ") + location);
 #endif
-#if STD_COUT
+#if CORE_STD_COUT
 	COUT << message << '\n' << ROS("LOCATION: ") << location;
 #endif
-#if VS_OUT_WINDOW
+#if CORE_VS_OUT_WINDOW
 	message = message + "\n" + location;
 	OutputDebugString(message.c_str());
 #endif
@@ -55,13 +55,13 @@ void core::output_code(codes code, const string& location)
 
 void core::output_co(const core::ce& e)
 {
-#if SYS_LOG_OUT
+#if CORE_SYS_LOG_OUT
 	logger::glb_sl->log_message(e.m_desc + ROS('\n') + ROS("LOCATION: ") + e.m_loc + ROS('\n') + ROS("WIN32 ERROR: ") + e.m_w32);
 #endif
-#if STD_COUT
+#if CORE_STD_COUT
 	COUT << e.m_desc << '\n' << ROS("LOCATION: ") << e.m_loc << '\n' << ROS("WIN32 ERROR: ") << e.m_w32;
 #endif
-#if VS_OUT_WINDOW
+#if CORE_VS_OUT_WINDOW
 	string message;
 	message = e.m_desc + ROS('\n') + ROS("LOCATION: ") + e.m_loc + ROS('\n') + ROS("WIN32 ERROR: ") + e.m_w32;
 	OutputDebugString(message.c_str());

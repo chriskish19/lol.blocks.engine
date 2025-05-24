@@ -33,4 +33,6 @@ namespace logger {
 	inline const character* divison_by_zero_description = ROS("logger code: divison_by_zero | message: attempting to divide by zero results in undefined behavoir.");
 	inline const character* logger_exception_caught_description = ROS("logger code: logger_exception_caught | message: a logger exception was thrown and caught.");
 	inline const character* unknown_exception_caught_description = ROS("logger code: unknown_exception_caught | message: an unknown exception was thrown and caught.");
+	inline const character* pointer_is_nullptr_description = ROS("logger code: pointer_is_nullptr | message: pointer has no memory to point to.");
+	inline const character* index_out_of_range_description = ROS("logger code: index_out_of_range | message: index is beyond the size of the container.");
 }

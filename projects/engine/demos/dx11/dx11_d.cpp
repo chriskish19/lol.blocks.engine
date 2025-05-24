@@ -176,7 +176,7 @@ engine::codes engine::dx11::triangle_demo::load_content()
 		);
 
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			codes code;
 
@@ -214,7 +214,7 @@ engine::codes engine::dx11::triangle_demo::load_content()
 			&m_sc_vs
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -250,7 +250,7 @@ engine::codes engine::dx11::triangle_demo::load_content()
 			&m_il
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -291,7 +291,7 @@ engine::codes engine::dx11::triangle_demo::load_content()
 			&eb
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			codes code;
 
@@ -332,7 +332,7 @@ engine::codes engine::dx11::triangle_demo::load_content()
 			&m_sc_ps
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -364,7 +364,7 @@ engine::codes engine::dx11::triangle_demo::load_content()
 			&m_vb
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -412,7 +412,7 @@ void engine::dx11::triangle_demo::render()
 engine::dx11::texture_demo::texture_demo(HWND handle, UINT width, UINT height)
 {
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-	st_vs_out(hr);
+	output_hr(hr);
 	
 	
 	// driver types
@@ -586,7 +586,7 @@ engine::codes engine::dx11::texture_demo::load_content()
 		);
 
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			codes code;
 
@@ -624,7 +624,7 @@ engine::codes engine::dx11::texture_demo::load_content()
 			&m_cm_vs
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -662,7 +662,7 @@ engine::codes engine::dx11::texture_demo::load_content()
 			&m_il
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -703,7 +703,7 @@ engine::codes engine::dx11::texture_demo::load_content()
 			&eb
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			codes code;
 
@@ -744,7 +744,7 @@ engine::codes engine::dx11::texture_demo::load_content()
 			&m_cm_ps
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -779,7 +779,7 @@ engine::codes engine::dx11::texture_demo::load_content()
 			&m_vb
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -796,7 +796,7 @@ engine::codes engine::dx11::texture_demo::load_content()
 			&m_tx
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -814,7 +814,7 @@ engine::codes engine::dx11::texture_demo::load_content()
 	{
 		HRESULT hr = m_p_dd->pDevice->CreateSamplerState(&cmpd, &m_cms);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -855,7 +855,7 @@ void engine::dx11::texture_demo::render()
 engine::dx11::simple_tx_demo::simple_tx_demo(HWND handle, UINT width, UINT height)
 {
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-	st_vs_out(hr);
+	output_hr(hr);
 
 
 	// driver types
@@ -983,7 +983,7 @@ engine::codes engine::dx11::simple_tx_demo::load_content()
 			&m_tx
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -1014,7 +1014,7 @@ void engine::dx11::simple_tx_demo::render()
 engine::dx11::ss_demo::ss_demo(HWND handle, UINT width, UINT height)
 {
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-	st_vs_out(hr);
+	output_hr(hr);
 
 
 	// driver types
@@ -1158,7 +1158,7 @@ engine::codes engine::dx11::ss_demo::load_content()
 			&m_tx
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -1217,7 +1217,7 @@ engine::dx11::camera_demo::camera_demo(HWND handle, UINT width, UINT height)
 {
 	// init direct xtk
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-	st_vs_out(hr);
+	output_hr(hr);
 	
 	
 	// driver types
@@ -1401,7 +1401,7 @@ engine::codes engine::dx11::camera_demo::load_content()
 		);
 
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			codes code;
 
@@ -1439,7 +1439,7 @@ engine::codes engine::dx11::camera_demo::load_content()
 			&m_sc_vs
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -1475,7 +1475,7 @@ engine::codes engine::dx11::camera_demo::load_content()
 			&m_il
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -1516,7 +1516,7 @@ engine::codes engine::dx11::camera_demo::load_content()
 			&eb
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			codes code;
 
@@ -1557,7 +1557,7 @@ engine::codes engine::dx11::camera_demo::load_content()
 			&m_sc_ps
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -1589,7 +1589,7 @@ engine::codes engine::dx11::camera_demo::load_content()
 			&m_vb
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -1608,7 +1608,7 @@ engine::codes engine::dx11::camera_demo::load_content()
 
 	{
 		HRESULT hr = m_p_dd->pDevice->CreateBuffer(&cbd, nullptr, &m_cameraCB);
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -1675,7 +1675,7 @@ engine::dx11::cube_demo::cube_demo(HWND handle, UINT width, UINT height)
 {
 	// init direct xtk
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-	st_vs_out(hr);
+	output_hr(hr);
 
 	// init mouse
 	m_ms = new DirectX::Mouse;
@@ -1867,7 +1867,7 @@ engine::codes engine::dx11::cube_demo::load_content()
 		);
 
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			codes code;
 
@@ -1905,7 +1905,7 @@ engine::codes engine::dx11::cube_demo::load_content()
 			&m_sc_vs
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -1941,7 +1941,7 @@ engine::codes engine::dx11::cube_demo::load_content()
 			&m_il
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -1982,7 +1982,7 @@ engine::codes engine::dx11::cube_demo::load_content()
 			&eb
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			codes code;
 
@@ -2023,7 +2023,7 @@ engine::codes engine::dx11::cube_demo::load_content()
 			&m_sc_ps
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -2053,7 +2053,7 @@ engine::codes engine::dx11::cube_demo::load_content()
 			&m_vb
 		);
 
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}
@@ -2070,7 +2070,7 @@ engine::codes engine::dx11::cube_demo::load_content()
 
 	{
 		HRESULT hr = m_p_dd->pDevice->CreateBuffer(&cbd, nullptr, &m_cameraCB);
-		st_vs_out(hr);
+		output_hr(hr);
 		if (FAILED(hr)) {
 			return codes::dx_error;
 		}

@@ -26,7 +26,7 @@ namespace engine {
 		// translate an hresult code to a string 
 		string hr_ts(HRESULT hr);
 
-		// send to visual studio output window
-		void st_vs_out(HRESULT hr, string location = engine::gl());
+		// send to terminal
+		void output_hr(HRESULT hr, string location = engine::gl());
 	}
 }

@@ -79,21 +79,36 @@ logger::system_log::system_log()
 		lt_thread = new std::thread(&logger::classic_log_window::thread_go, log_terminal);
 	}
 	catch (const logger::le& e) {
-		// logger error
-		CERROR << ROS("DESCRIPTION: ") << e.m_desc << '\n' <<
-			ROS("WINOWS ERROR: ") << e.m_w32 << '\n' <<
-			ROS("LOCATION: ") << e.m_loc;
+		string output = ROS("DESCRIPTION: ") + e.m_desc + ROS('\n') + ROS("WINDOWS ERROR: ") + e.m_w32
+			+ ROS('\n') + ROS("LOCATION: ") + e.m_loc + ROS('\n');
+		OutputDebugString(output.c_str());
 	}
 	catch (...) {
-		CERROR << ROS("Unknown exception caught") << '\n' <<
-			ROS("LOCATION: ") << gl();
+		logger::le e(logger::codes::unknown_exception_caught, unknown_exception_caught_description);
+		string output = ROS("DESCRIPTION: ") + e.m_desc + ROS('\n') + ROS("WINDOWS ERROR: ") + e.m_w32
+			+ ROS('\n') + ROS("LOCATION: ") + e.m_loc + ROS('\n');
+		OutputDebugString(output.c_str());
 	}
 }
 
 logger::system_log::~system_log()
 {
-	*this << ROS("log terminal window waiting to be closed...");
+	try {
+		*this << ROS("log terminal window waiting to be closed...");
+	}
+	catch (const logger::le& e) {
+		string output = ROS("DESCRIPTION: ") + e.m_desc + ROS('\n') + ROS("WINDOWS ERROR: ") + e.m_w32
+			+ ROS('\n') + ROS("LOCATION: ") + e.m_loc + ROS('\n');
+		OutputDebugString(output.c_str());
+	}
+	catch (...) {
+		logger::le e(logger::codes::unknown_exception_caught, unknown_exception_caught_description);
+		string output = ROS("DESCRIPTION: ") + e.m_desc + ROS('\n') + ROS("WINDOWS ERROR: ") + e.m_w32
+			+ ROS('\n') + ROS("LOCATION: ") + e.m_loc + ROS('\n');
+		OutputDebugString(output.c_str());
+	}
 	
+
 	if (lt_thread->joinable())
 		lt_thread->join();
 

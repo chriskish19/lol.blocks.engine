@@ -9,7 +9,6 @@
 #pragma once
 #include LOGGER_NAMES_INCLUDE
 #include LOGGER_DEPENDS_INCLUDE_PATH
-#include LOGGER_LOG_API_INCLUDE_PATH
 
 
 #define LOGGER_LINES 1000
@@ -18,12 +17,13 @@
 
 namespace logger {
 	struct log {
-		log() {
+		log(std::size_t log_index):m_index(log_index) {
 			message->reserve(LOG_LENGTH);
+			
 		}
 
 		string* message = new string;
-		RECT* window_position = new RECT;
+		RECT* window_position = new RECT(0,0,0,0);
 
 		~log() {
 			if (message != nullptr) {
@@ -36,6 +36,8 @@ namespace logger {
 				window_position = nullptr;
 			}
 		}
+
+		const std::size_t m_index;
 	};
 
 
@@ -48,14 +50,28 @@ namespace logger {
 		// log a message
 		void set_message(const string& message);
 
-		// get index position in logs vec
-		std::size_t get_index() { return m_index; }
+		// get next index position in logs vec for an unset log
+		std::size_t get_v_index() { return m_v_index; }
+
+		// get the current set log position
+		std::size_t get_c_index() { return m_c_index; }
 
 		// get logs_V pointer
 		std::vector<log*>* get_buffer() { return m_logs_v; }
 	protected:
+		// vector used for each log
 		std::vector<log*>* m_logs_v = nullptr;
 
-		std::size_t m_index = 0;
+		// this index is always set to the next log
+		// not the currently last set log
+		// its a vector index
+		std::size_t m_v_index = 0;
+
+		// current index of set log
+		std::size_t m_c_index = 0;
+
+		// simple time stamp a message
+		// returns the message with a time on it ([2025-05-09-14:00:30...])
+		string time_stamped(const string& message);
 	};
 }

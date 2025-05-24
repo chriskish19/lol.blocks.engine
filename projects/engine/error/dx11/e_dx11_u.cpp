@@ -111,7 +111,17 @@ engine::dx11::string engine::dx11::error_blob_ts(ID3DBlob* error, engine::codes*
 #endif
 }
 
-void engine::dx11::st_vs_out(HRESULT hr,string location) {
-	string dx_message = hr_ts(hr);
-	CERROR << ROS("HRESULT: ") << dx_message << '\n' << ROS("LOCATION: ") << location << '\n';
+void engine::dx11::output_hr(HRESULT hr,string location) {
+	logger::string hr_message = hr_ts(hr);
+#if ENGINE_SYS_LOG_OUT
+	logger::glb_sl->log_message(ROS("HRESULT: ") + hr_message + ROS('\n') + ROS("LOCATION: ") + location);
+#endif
+#if ENGINE_STD_COUT
+	COUT << ROS("HRESULT: ") << hr_message << '\n' << ROS("LOCATION: ") << location;
+#endif
+#if ENGINE_VS_OUT_WINDOW
+	hr_message = ROS("HRESULT: ") + hr_message + ROS('\n') + ROS("LOCATION: ") + location + ROS('\n');
+	OutputDebugString(hr_message.c_str());
+#endif
+	
 }

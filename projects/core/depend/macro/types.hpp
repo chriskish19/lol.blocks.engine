@@ -45,10 +45,11 @@ namespace core {
 
 #endif
 
-
+// entry in main.cpp
 #define MAIN_ENTRY 1
 #define TEST_ENTRY 0
 
-#define SYS_LOG_OUT 1
-#define STD_COUT 0
-#define VS_OUT_WINDOW 0
+// terminal logging
+#define CORE_SYS_LOG_OUT 1
+#define CORE_STD_COUT 0
+#define CORE_VS_OUT_WINDOW 0
