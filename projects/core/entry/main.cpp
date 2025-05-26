@@ -34,8 +34,12 @@ int WINAPI wWinMain(
 ) {
 	std::unique_ptr<core::standard_window> window = nullptr;
 	std::unique_ptr<engine::dx11::cube_demo> dx11_demo = nullptr;
+	
 
 	try {
+		// global logger
+		logger::glb_sl = std::make_unique<logger::system_log>();
+
 		window = std::make_unique<core::standard_window>();
 		{
 			core::codes code = window->load();
@@ -92,14 +96,14 @@ int WINAPI wWinMain(
 		core::string message = ROS("std exception, what: ") + e.what();
 #endif
 
-#if SYS_LOG_OUT
+#if CORE_SYS_LOG_OUT
 		logger::glb_sl->log_message(message + ROS('\n') + ROS("LOCATION: ") + core::gl());
 #endif
-#if STD_COUT
+#if CORE_STD_COUT
 		COUT << message << '\n' << ROS("LOCATION: ") << core::gl();
 #endif
-#if VS_OUT_WINDOW
-		message = message + "\n" + core::gl();
+#if CORE_VS_OUT_WINDOW
+		message = message + ROS("\n") + ROS("LOCATION: ") + core::gl() + ROS("\n");
 		OutputDebugString(message.c_str());
 #endif
 		return static_cast<int>(core::codes::std_exception_caught);

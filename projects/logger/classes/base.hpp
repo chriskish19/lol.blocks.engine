@@ -58,6 +58,9 @@ namespace logger {
 
 		// get logs_V pointer
 		std::vector<log*>* get_buffer() { return m_logs_v; }
+
+		// get logs_buffer mtx
+		std::mutex* get_v_buffer_mtx() { return m_v_mtx; }
 	protected:
 		// vector used for each log
 		std::vector<log*>* m_logs_v = nullptr;
@@ -73,5 +76,8 @@ namespace logger {
 		// simple time stamp a message
 		// returns the message with a time on it ([2025-05-09-14:00:30...])
 		string time_stamped(const string& message);
+
+		// prevent concurrent access to logs vec
+		std::mutex* m_v_mtx = new std::mutex;
 	};
 }

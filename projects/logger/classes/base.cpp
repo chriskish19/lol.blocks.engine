@@ -35,8 +35,13 @@ logger::base::~base()
 
 void logger::base::set_message(const string& message)
 {
-	// get current log message
-	auto current_log = m_logs_v->at(m_v_index);
+	logger::log* current_log = nullptr;
+	{
+		std::unique_lock<std::mutex> local_lock(*m_v_mtx);
+
+		// get current log message
+		current_log = m_logs_v->at(m_v_index);
+	}
 
 	// copy
 	*current_log->message = time_stamped(message);

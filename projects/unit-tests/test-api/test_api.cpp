@@ -34,7 +34,7 @@ logger::codes TEST_API test::classic_log_terminal(std::size_t seconds)
     auto end_time = std::chrono::steady_clock::now() + std::chrono::seconds(seconds);
     while (std::chrono::steady_clock::now() < end_time) {
         string message = data.random_data_string(LOG_LENGTH - lt_p->m_ts_length);
-        *logger::glb_sl << message;
+        logger::glb_sl->log_message(message);
     }
     return logger::codes::success;
 #endif
@@ -64,7 +64,7 @@ logger::codes TEST_API test::classic_log_terminal(std::size_t seconds, std::size
     auto end_time = std::chrono::steady_clock::now() + std::chrono::seconds(seconds);
     while (std::chrono::steady_clock::now() < end_time) {
         string message = data.random_data_string(LOG_LENGTH - lt_p->m_ts_length);
-        *logger::glb_sl << message;
+        logger::glb_sl->log_message(message);
         std::this_thread::sleep_for(std::chrono::seconds(pause));
     }
     return logger::codes::success;

@@ -1,3 +1,4 @@
+#include "wl.hpp"
 /***************************************
 *  File: wl.cpp (window logger)
 *
@@ -105,14 +106,32 @@ logger::codes logger::window::load()
             this
     };
 
+    /*
+    
+    typedef struct tagWNDCLASSEXW {
+              UINT      cbSize;
+              UINT      style;
+              WNDPROC   lpfnWndProc;
+              int       cbClsExtra;
+              int       cbWndExtra;
+              HINSTANCE hInstance;
+              HICON     hIcon;
+              HCURSOR   hCursor;
+              HBRUSH    hbrBackground;
+              LPCWSTR   lpszMenuName;
+              LPCWSTR   lpszClassName;
+              HICON     hIconSm;
+            } WNDCLASSEXW, *PWNDCLASSEXW, *NPWNDCLASSEXW, *LPWNDCLASSEXW;
+
+    */
 
     m_wc = WNDCLASSEX{
        sizeof(WNDCLASSEX),
-       CS_HREDRAW | CS_VREDRAW,
+       0,
        s_window_proc,
        0,
        0,
-       GetModuleHandle(NULL),
+       m_module,
        ExtractIcon(m_module, ROS("shell32.dll"), 15),
        LoadCursor(nullptr, IDC_ARROW),
        reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1),
@@ -243,14 +262,12 @@ logger::codes logger::classic_log_window::load()
     return codes::success;
 }
 
-void logger::classic_log_window::send_message(const string& message)
+void logger::classic_log_window::send_log(logger::log* log_p)
 {
     {
         std::lock_guard<std::mutex> local_lock(m_message_mtx);
-        log_foundation.set_message(message);
+        log_foundation.set_message(*log_p->message);
     }
-
-    UpdateWindow(m_handle);
 }
 
 void logger::classic_log_window::thread_go()
@@ -265,7 +282,7 @@ void logger::classic_log_window::thread_go()
 
     // Run the message loop.
     MSG msg = { };
-    while (GetMessage(&msg, NULL, 0, 0) > 0)
+    while (GetMessage(&msg, m_handle, 0, 0) > 0)
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
@@ -289,6 +306,14 @@ std::size_t logger::classic_log_window::get_time_length()
 {
     string time = time_stamped(ROS(""));
     return time.size();
+}
+
+logger::q_sys_inits logger::classic_log_window::get_qsys_inits()
+{
+    q_sys_inits init = {};
+    init.vp = log_foundation.get_buffer();
+    init.mtx_p = log_foundation.get_v_buffer_mtx();
+    return init;
 }
 
 LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -330,7 +355,7 @@ LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARA
             }
 
             case WM_PAINT:
-            {
+            {   
                 std::lock_guard<std::mutex> local_lock(m_message_mtx);
 
                 RECT wl_rect = {};
@@ -350,7 +375,7 @@ LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARA
 
                 PAINTSTRUCT ps;
                 HDC hdc = BeginPaint(hwnd, &ps);
-                FillRect(hdc, &wl_rect, (HBRUSH)(COLOR_WINDOW + 1));
+                //FillRect(hdc, &wl_rect, (HBRUSH)(COLOR_WINDOW + 1));
 
                 for (std::size_t i = first_line; i < last_line and i < log_buffer->size(); ++i) {
                     // get log

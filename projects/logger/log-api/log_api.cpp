@@ -1009,7 +1009,7 @@ void logger::build_rects(std::vector<log*>* vl_p, std::size_t s_index, std::size
         throw le(logger::codes::index_out_of_range, index_out_of_range_description);
     }
 
-    RECT last = {*window};
+    RECT last = {};
     for (std::size_t i = s_index; i < e_index; ++i) {
         auto log = vl_p->at(i);
 
@@ -1021,7 +1021,7 @@ void logger::build_rects(std::vector<log*>* vl_p, std::size_t s_index, std::size
 
         std::size_t height = total_lines * (LOGGER_FONT_SIZE + 2);
 
-        last = RECT(window->left, window->top + last.bottom, window->right, window->bottom + height);
+        last = RECT(window->left, window->top + last.bottom, window->right,last.bottom + height);
 
         *log->window_position = last;
     }

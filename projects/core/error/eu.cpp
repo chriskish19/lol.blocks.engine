@@ -47,7 +47,7 @@ void core::output_code(codes code, const string& location)
 	COUT << message << '\n' << ROS("LOCATION: ") << location;
 #endif
 #if CORE_VS_OUT_WINDOW
-	message = message + "\n" + location;
+	message = message + ROS("\n") + location;
 	OutputDebugString(message.c_str());
 #endif
 

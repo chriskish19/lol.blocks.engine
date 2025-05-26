@@ -82,6 +82,11 @@ namespace logger {
 		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 	};
 
+	// for message queue system
+	struct q_sys_inits {
+		std::vector<log*>* vp = nullptr;
+		std::mutex* mtx_p = nullptr;
+	};
 
 	// uses win32 api and classic window logging
 	class LOGS_API classic_log_window : public logger::window {
@@ -90,7 +95,7 @@ namespace logger {
 
 		codes load() override;
 
-		void send_message(const string& message);
+		void send_log(logger::log* log_p);
 
 		void thread_go();
 
@@ -98,6 +103,9 @@ namespace logger {
 
 		// length of time stamp
 		const std::size_t m_ts_length = get_time_length();
+
+		// buffer of logs from log_foundation and its mutex pointers
+		q_sys_inits get_qsys_inits();
 	protected:
 		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 

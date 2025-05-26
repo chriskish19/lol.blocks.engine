@@ -52,4 +52,4 @@ namespace core {
 // terminal logging
 #define CORE_SYS_LOG_OUT 1
 #define CORE_STD_COUT 0
-#define CORE_VS_OUT_WINDOW 0
+#define CORE_VS_OUT_WINDOW 1

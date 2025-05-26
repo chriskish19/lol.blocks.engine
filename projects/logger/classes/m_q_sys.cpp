@@ -10,26 +10,19 @@
 #include LOGGER_NAMES_INCLUDE
 #include LOGGER_MQSYS_INCLUDE_PATH
 
-logger::log_q::log_q(std::vector<log*>* vl_p)
-	:m_vl_p(vl_p)
+logger::log_q::log_q(logger::classic_log_window* lw_p)
+	:m_lw_p(lw_p)
 {
-	if (m_vl_p == nullptr) {
+	if (m_lw_p == nullptr) {
 		throw le(logger::codes::pointer_is_nullptr, pointer_is_nullptr_description);
 	}
 	
 	m_log_q = new std::queue<log*>;
 	m_log_q_buffer = new std::queue<log*>;
 
-	for (auto log : *vl_p) {
-		if (log->message->empty()) {
-			break;
-		}
-		else {
-			m_log_q->push(log);
-		}
-	}
-
-
+	auto inits = m_lw_p->get_qsys_inits();
+	m_vl_p = inits.vp;
+	m_v_mtx_p = inits.mtx_p;
 }
 
 logger::log_q::~log_q()
@@ -47,10 +40,7 @@ logger::log_q::~log_q()
 
 void logger::log_q::process_messages()
 {
-	
-
-
-	while (m_run_pm.load()) {
+	while (m_run_pm.load() == true) {
 
 		// wait here
 		std::mutex local_mtx;
@@ -60,18 +50,21 @@ void logger::log_q::process_messages()
 				return m_signal_b.load();
 			});
 
-		// load up buffer
-		load_up(); 
-
 		{
 			std::unique_lock<std::mutex> local_lock(m_q_mtx);
-			
+
 			// swap with buffer
 			m_log_q->swap(*m_log_q_buffer);
 		}
 
-		// process queue
+		while (m_log_q->empty() == false) {
+			// process queue
+			logger::log* log_message = m_log_q->front();
+			m_lw_p->send_log(log_message);
+			m_log_q->pop();
+		}
 
+		m_signal_b.store(false);
 	}
 }
 
