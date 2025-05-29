@@ -92,13 +92,10 @@ namespace logger {
 	class LOGS_API classic_log_window : public logger::window {
 	public:
 		classic_log_window();
-
+		~classic_log_window();
 		codes load() override;
-
 		void send_log(logger::log* log_p);
-
 		void thread_go();
-
 		codes wait_until_init();
 
 		// length of time stamp
@@ -116,8 +113,6 @@ namespace logger {
 		int m_xClientMax = 0;
 		int m_font_size = LOGGER_FONT_SIZE;
 		int m_xUpper = 0;
-		int m_hscroll_position = 0;
-		int m_vscroll_position = 0;
 
 		// custom font
 		HFONT m_clw_font = nullptr;
@@ -134,5 +129,24 @@ namespace logger {
 
 		// returns the length of a time stamp
 		std::size_t get_time_length();
+
+		void draw_logs_to_backbuffer(HDC hdc, std::vector<log*>* log_vp);
+
+		HBITMAP m_backBufferBitmap = nullptr;
+		HDC     m_backBufferDC = nullptr;
+		int     m_backBufferWidth = 0;
+		int     m_backBufferHeight = 0;
+
+		void recreate_backbuffer(HWND handle, int width, int height);
+
+		void horizontal_scrolling(WPARAM wParam);
+		void vertical_scrolling(WPARAM wParam);
+
+		int m_hscroll_position = 0;
+		int m_vscroll_position = 0;
+		int m_delta_h_scroll = 0;
+		int m_delta_v_scroll = 0;
+
+
 	};
 }

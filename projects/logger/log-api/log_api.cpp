@@ -672,8 +672,10 @@ std::string logger::to_narrow_string(const std::wstring& wide, codes* code_p)
     return temp_buffer_str;
 }
 
-logger::codes logger::vertical_drag(HWND hwnd, WPARAM wParam, int* vscroll_position, int yChar)
+logger::codes logger::vertical_drag(HWND hwnd, WPARAM wParam, int yChar)
 {
+    static int vscroll_position;
+
     // Get all the vertial scroll bar information.
     SCROLLINFO si = {};
     si.cbSize = sizeof(si);
@@ -683,44 +685,44 @@ logger::codes logger::vertical_drag(HWND hwnd, WPARAM wParam, int* vscroll_posit
     }
 
     // Save the position for comparison later on.
-    *vscroll_position = si.nPos;
+    vscroll_position = si.nPos;
     switch (LOWORD(wParam))
     {
 
-        // User clicked the HOME keyboard key.
-    case SB_TOP:
-        si.nPos = si.nMin;
-        break;
+            // User clicked the HOME keyboard key.
+        case SB_TOP:
+            si.nPos = si.nMin;
+            break;
 
-        // User clicked the END keyboard key.
-    case SB_BOTTOM:
-        si.nPos = si.nMax;
-        break;
+            // User clicked the END keyboard key.
+        case SB_BOTTOM:
+            si.nPos = si.nMax;
+            break;
 
-        // User clicked the top arrow.
-    case SB_LINEUP:
-        si.nPos -= 1;
-        break;
+            // User clicked the top arrow.
+        case SB_LINEUP:
+            si.nPos -= 1;
+            break;
 
-        // User clicked the bottom arrow.
-    case SB_LINEDOWN:
-        si.nPos += 1;
-        break;
+            // User clicked the bottom arrow.
+        case SB_LINEDOWN:
+            si.nPos += 1;
+            break;
 
-        // User clicked the scroll bar shaft above the scroll box.
-    case SB_PAGEUP:
-        si.nPos -= si.nPage;
-        break;
+            // User clicked the scroll bar shaft above the scroll box.
+        case SB_PAGEUP:
+            si.nPos -= si.nPage;
+            break;
 
-        // User clicked the scroll bar shaft below the scroll box.
-    case SB_PAGEDOWN:
-        si.nPos += si.nPage;
-        break;
+            // User clicked the scroll bar shaft below the scroll box.
+        case SB_PAGEDOWN:
+            si.nPos += si.nPage;
+            break;
 
-        // User dragged the scroll box.
-    case SB_THUMBTRACK:
-        si.nPos = si.nTrackPos;
-        break;
+            // User dragged the scroll box.
+        case SB_THUMBTRACK:
+            si.nPos = si.nTrackPos;
+            break;
 
     default:
         break;
@@ -729,32 +731,25 @@ logger::codes logger::vertical_drag(HWND hwnd, WPARAM wParam, int* vscroll_posit
     // Set the position and then retrieve it.  Due to adjustments
     // by Windows it may not be the same as the value set.
     si.fMask = SIF_POS;
-    SetScrollInfo(hwnd, SB_VERT, &si, TRUE);
+    SetScrollInfo(hwnd, SB_VERT, &si, FALSE);
     if (GetScrollInfo(hwnd, SB_VERT, &si) == FALSE) {
         throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
     }
 
-    // If the position has changed, scroll window and update it.
-    if (si.nPos != *vscroll_position)
-    {
-        if (ScrollWindow(hwnd, 0, yChar * (*vscroll_position - si.nPos), NULL, NULL) == FALSE) {
+    if (si.nPos != vscroll_position) {
+        if (ScrollWindow(hwnd, 0, yChar * (vscroll_position - si.nPos), NULL, NULL) == FALSE) {
             throw le(codes::scroll_window_fail, scroll_window_fail_description);
         }
-
-        if (InvalidateRect(hwnd, nullptr, TRUE) == FALSE) {
-            throw le(codes::invalidate_rect_fail, invalidate_rect_fail_description);
-        }
-
-        if (UpdateWindow(hwnd) == FALSE) {
-            throw le(codes::update_window_fail, update_window_fail_description);
-        }
     }
+    
 
     return codes::success;
 }
 
-logger::codes logger::horizontal_drag(HWND hwnd, WPARAM wParam, int* hscroll_position,int xChar)
+logger::codes logger::horizontal_drag(HWND hwnd, WPARAM wParam,int xChar)
 {
+    static int hscroll_position;
+
     SCROLLINFO si = {};
     si.cbSize = sizeof(si);
     si.fMask = SIF_ALL;
@@ -762,7 +757,7 @@ logger::codes logger::horizontal_drag(HWND hwnd, WPARAM wParam, int* hscroll_pos
         throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
     }
 
-    *hscroll_position = si.nPos;
+    hscroll_position = si.nPos;
     switch (LOWORD(wParam))
     {
         // User clicked the left arrow.
@@ -794,32 +789,15 @@ logger::codes logger::horizontal_drag(HWND hwnd, WPARAM wParam, int* hscroll_pos
         break;
     }
 
-    // Ensure the position is within valid range.
-    si.nPos = std::clamp(si.nPos, si.nMin, si.nMax);
+    // If the position has changed, scroll the window.
+    if (si.nPos != hscroll_position){
+        if (ScrollWindowEx(hwnd, xChar * (hscroll_position - si.nPos), 0, NULL, NULL,NULL,NULL,SW_INVALIDATE) == FALSE) {
+            throw le(codes::scroll_window_fail, scroll_window_fail_description);                                                          
+        }
+    }
 
-    // Set the position and then retrieve it.  Due to adjustments
-    // by Windows it may not be the same as the value set.
     si.fMask = SIF_POS;
     SetScrollInfo(hwnd, SB_HORZ, &si, TRUE);
-    if (GetScrollInfo(hwnd, SB_HORZ, &si) == FALSE) {
-        throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
-    }
-
-    // If the position has changed, scroll the window.
-    if (si.nPos != *hscroll_position)
-    {
-        if (ScrollWindow(hwnd, xChar * (*hscroll_position - si.nPos), 0, NULL, NULL) == FALSE) {
-            throw le(codes::scroll_window_fail, scroll_window_fail_description);
-        }
-
-        if (InvalidateRect(hwnd, nullptr, TRUE) == FALSE) {
-            throw le(codes::invalidate_rect_fail, invalidate_rect_fail_description);
-        }
-
-        if (UpdateWindow(hwnd) == FALSE) {
-            throw le(codes::update_window_fail, update_window_fail_description);
-        }
-    }
 
     return codes::success;
 }
@@ -859,6 +837,9 @@ logger::codes logger::window_size_change(HWND hwnd, LPARAM lParam, int nol, int 
         si.nPage = xClient / xChar;
         SetScrollInfo(hwnd, SB_HORZ, &si, TRUE);
     }
+
+    InvalidateRect(hwnd, nullptr, TRUE);
+    UpdateWindow(hwnd);
 
     return codes::success;
 }
@@ -1009,20 +990,27 @@ void logger::build_rects(std::vector<log*>* vl_p, std::size_t s_index, std::size
         throw le(logger::codes::index_out_of_range, index_out_of_range_description);
     }
 
-    RECT last = {};
-    for (std::size_t i = s_index; i < e_index; ++i) {
+    std::size_t prev_height = 0;
+    std::size_t accum_height = 0;
+    for (std::size_t i = s_index; i < e_index and i < vl_p->size(); ++i) {
         auto log = vl_p->at(i);
-
-        if (log->message->empty()) {
-            break;
-        }
 
         std::size_t total_lines = count_new_lines(*log->message) + 1;
 
         std::size_t height = total_lines * (LOGGER_FONT_SIZE + 2);
 
-        last = RECT(window->left, window->top + last.bottom, window->right,last.bottom + height);
+        std::size_t bottom = height + accum_height;
 
-        *log->window_position = last;
+        std::size_t top = window->top + accum_height;
+
+        *log->window_position = RECT(window->left,top ,window->right,bottom );
+
+        prev_height = height;
+
+        accum_height += prev_height;
+
+        if (accum_height > window->bottom) {
+            break;
+        }
     }
 }

@@ -14,7 +14,7 @@ You interact with the world by writing code that can cause changes to the world,
 <li>The graphics api will be dx11 and the base api will be win32.</li>
 <li>Use an editor to write the script. I would use vscode since it has powershell built in. Then launch a custom cmdlet written for lol.blocks.engine.core.</li>
 <li>Ill write all the powershell classes needed as modules that will get included into the main script.</li>
-
+<li>everything is from scratch and im only one guy give this 5-8 years atleast.
 
 
 

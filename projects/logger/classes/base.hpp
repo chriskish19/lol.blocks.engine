@@ -37,6 +37,7 @@ namespace logger {
 			}
 		}
 
+		std::atomic<bool> m_fresh_message = true;
 		const std::size_t m_index;
 	};
 

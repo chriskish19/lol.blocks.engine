@@ -44,14 +44,14 @@ namespace logger{
 	// WPARAM wParam : button push
 	// int vscroll_position : vertical scroll position
 	// int yChar : height of character
-	codes vertical_drag(HWND hwnd, WPARAM wParam,int* vscroll_position,int yChar);
+	codes vertical_drag(HWND hwnd, WPARAM wParam,int yChar);
 
 	// horizontal movement on the scroll bar
 	// HWND hwnd: window handle
 	// WPARAM wParam: button push
 	// int hscroll_position : horizontal scroll position
 	// int xChar : width of character
-	codes horizontal_drag(HWND hwnd, WPARAM wParam, int* hscroll_position, int xChar);
+	codes horizontal_drag(HWND hwnd, WPARAM wParam, int xChar);
 
 	// window size changes for scrolling
 	// HWND : window handle
