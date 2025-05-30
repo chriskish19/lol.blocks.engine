@@ -14,6 +14,7 @@
 #include LOGGER_BASE_INCLUDE_PATH
 #include LOGGER_CO_INCLUDE_PATH
 #include LOGGER_LOG_API_INCLUDE_PATH
+#include LOGGER_LP_INCLUDE_PATH
 
 
 namespace logger {
@@ -89,7 +90,7 @@ namespace logger {
 	};
 
 	// uses win32 api and classic window logging
-	class LOGS_API classic_log_window : public logger::window {
+	class LOGS_API classic_log_window : public logger::window, public logger::log_page {
 	public:
 		classic_log_window();
 		~classic_log_window();
@@ -147,6 +148,6 @@ namespace logger {
 		int m_delta_h_scroll = 0;
 		int m_delta_v_scroll = 0;
 
-
+		codes print_log_to_window(logger::log* log_p);
 	};
 }

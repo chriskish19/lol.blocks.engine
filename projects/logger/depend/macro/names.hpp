@@ -5,6 +5,8 @@
 *			without breaking #include paths
 *  
 *  Project: logger
+* 
+*  INCLUDE NAME: LOGGER_NAMES
 * *************************************/
 
 // dependencies
@@ -19,6 +21,7 @@
 #define LOGGER_WINDOW_LOGGER_INCLUDE_PATH			LOGGER_wl_hpp							// window logger terminal
 #define LOGGER_BASE_INCLUDE_PATH					LOGGER_base_hpp							// base logger
 #define LOGGER_MQSYS_INCLUDE_PATH					LOGGER_m_q_sys_hpp						// message queue system
+#define LOGGER_LP_INCLUDE_PATH						LOGGER_log_page_hpp						// logger page
 
 // error
 #define LOGGER_CODES_INCLUDE_PATH					LOGGER_codes_hpp						// error codes

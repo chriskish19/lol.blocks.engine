@@ -260,6 +260,10 @@ void logger::classic_log_window::send_log(logger::log* log_p)
         std::lock_guard<std::mutex> local_lock(m_message_mtx);
         log_foundation.set_message(*log_p->message);
     }
+
+    // print the new log to the window
+    print_log_to_window(log_p);
+
 }
 
 void logger::classic_log_window::thread_go()
@@ -302,14 +306,17 @@ std::size_t logger::classic_log_window::get_time_length()
 
 void logger::classic_log_window::draw_logs_to_backbuffer(HDC hdc, std::vector<log*>* log_vp)
 {
-    RECT backRect = { 0, 0, m_backBufferWidth, m_backBufferHeight };
-    FillRect(hdc, &backRect, (HBRUSH)(COLOR_WINDOW + 1));
+    std::lock_guard<std::mutex> local_lock(m_message_mtx);
 
     // get window dimensions
     RECT wl_rect = {};
     if (GetClientRect(m_handle, &wl_rect) == FALSE) {
         throw le(codes::get_client_rect_fail, get_client_rect_fail_description);
     }
+
+    RECT white_background = { wl_rect.left,wl_rect.top,m_backBufferWidth ,m_backBufferHeight };
+    FillRect(hdc, &white_background , (HBRUSH)(COLOR_WINDOW + 1));
+
     int window_height = wl_rect.bottom - wl_rect.top;
     int window_width = wl_rect.right - wl_rect.left;
 
@@ -484,6 +491,24 @@ void logger::classic_log_window::vertical_scrolling(WPARAM wParam)
     // repaint
     InvalidateRect(m_handle, NULL, FALSE);
     UpdateWindow(m_handle);
+}
+
+logger::codes logger::classic_log_window::print_log_to_window(logger::log* log_p)
+{
+    logger::log_page::update(log_p);
+    if (log_page::m_height > m_backBufferHeight) {
+        ScrollWindowEx(m_handle, 0, log_p->m_height, nullptr, nullptr, nullptr, nullptr, SW_INVALIDATE);
+        SetScrollPos(m_handle, SB_VERT, log_p->m_lines, TRUE);
+    }
+    else {
+        // repaint
+        InvalidateRect(m_handle, NULL, FALSE);
+    }
+    auto log_buffer = log_foundation.get_buffer();
+    draw_logs_to_backbuffer(m_backBufferDC, log_buffer);
+    UpdateWindow(m_handle);
+    
+    return codes::success;
 }
 
 logger::q_sys_inits logger::classic_log_window::get_qsys_inits()

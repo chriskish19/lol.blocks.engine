@@ -39,6 +39,8 @@ namespace logger {
 
 		std::atomic<bool> m_fresh_message = true;
 		const std::size_t m_index;
+		std::size_t m_lines = 1;
+		std::size_t m_height = LOGGER_FONT_SIZE;
 	};
 
 
