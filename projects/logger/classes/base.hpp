@@ -51,19 +51,13 @@ namespace logger {
 		~base();
 
 		// log a message
-		void set_message(const string& message);
+		void set_log(logger::log* log_p);
 
 		// get next index position in logs vec for an unset log
 		std::size_t get_v_index() { return m_v_index; }
 
-		// get the current set log position
-		std::size_t get_c_index() { return m_c_index; }
-
 		// get logs_V pointer
 		std::vector<log*>* get_buffer() { return m_logs_v; }
-
-		// get logs_buffer mtx
-		std::mutex* get_v_buffer_mtx() { return m_v_mtx; }
 	protected:
 		// vector used for each log
 		std::vector<log*>* m_logs_v = nullptr;
@@ -73,14 +67,11 @@ namespace logger {
 		// its a vector index
 		std::size_t m_v_index = 0;
 
-		// current index of set log
-		std::size_t m_c_index = 0;
-
 		// simple time stamp a message
 		// returns the message with a time on it ([2025-05-09-14:00:30...])
 		string time_stamped(const string& message);
 
 		// prevent concurrent access to logs vec
-		std::mutex* m_v_mtx = new std::mutex;
+		std::mutex m_v_mtx;
 	};
 }

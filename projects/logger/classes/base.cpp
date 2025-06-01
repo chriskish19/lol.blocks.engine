@@ -33,26 +33,14 @@ logger::base::~base()
 	}
 }
 
-void logger::base::set_message(const string& message)
+void logger::base::set_log(logger::log* log_p)
 {
-	logger::log* current_log = nullptr;
-	{
-		std::unique_lock<std::mutex> local_lock(*m_v_mtx);
-
-		// get current log message
-		current_log = m_logs_v->at(m_v_index);
-	}
-
-	// copy
-	*current_log->message = time_stamped(message);
+	*log_p->message = time_stamped(*log_p->message);
 
 	// cycle
 	if (m_v_index < (m_logs_v->size() - 1)) {
 		// next log
 		m_v_index++;
-
-		// current log
-		m_c_index = m_v_index - 1;
 	}
 	else {
 		// reset

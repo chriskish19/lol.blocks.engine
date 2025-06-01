@@ -14,7 +14,6 @@
 #include LOGGER_BASE_INCLUDE_PATH
 #include LOGGER_CO_INCLUDE_PATH
 #include LOGGER_LOG_API_INCLUDE_PATH
-#include LOGGER_LP_INCLUDE_PATH
 
 
 namespace logger {
@@ -83,27 +82,17 @@ namespace logger {
 		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 	};
 
-	// for message queue system
-	struct q_sys_inits {
-		std::vector<log*>* vp = nullptr;
-		std::mutex* mtx_p = nullptr;
-	};
-
 	// uses win32 api and classic window logging
-	class LOGS_API classic_log_window : public logger::window, public logger::log_page {
+	class LOGS_API classic_log_window : public logger::window, public logger::base {
 	public:
 		classic_log_window();
 		~classic_log_window();
 		codes load() override;
-		void send_log(logger::log* log_p);
 		void thread_go();
 		codes wait_until_init();
 
 		// length of time stamp
-		const std::size_t m_ts_length = get_time_length();
-
-		// buffer of logs from log_foundation and its mutex pointers
-		q_sys_inits get_qsys_inits();
+		const std::size_t m_ts_length = time_stamped(ROS("")).size();
 	protected:
 		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
@@ -114,40 +103,16 @@ namespace logger {
 		int m_xClientMax = 0;
 		int m_font_size = LOGGER_FONT_SIZE;
 		int m_xUpper = 0;
+		int m_yClient = 0;
+		int m_xClient = 0;
+		int m_xPos = 0;
+		int m_yPos = 0;
 
 		// custom font
 		HFONT m_clw_font = nullptr;
 
-		// underlying log system
-		base log_foundation = base(LOGGER_LINES);
-
-		// prevent concurrency errors
-		std::mutex m_message_mtx;
-
 		// init
 		std::atomic<bool> m_wait_b = false;
 		std::condition_variable m_wait_cv;
-
-		// returns the length of a time stamp
-		std::size_t get_time_length();
-
-		void draw_logs_to_backbuffer(HDC hdc, std::vector<log*>* log_vp);
-
-		HBITMAP m_backBufferBitmap = nullptr;
-		HDC     m_backBufferDC = nullptr;
-		int     m_backBufferWidth = 0;
-		int     m_backBufferHeight = 0;
-
-		void recreate_backbuffer(HWND handle, int width, int height);
-
-		void horizontal_scrolling(WPARAM wParam);
-		void vertical_scrolling(WPARAM wParam);
-
-		int m_hscroll_position = 0;
-		int m_vscroll_position = 0;
-		int m_delta_h_scroll = 0;
-		int m_delta_v_scroll = 0;
-
-		codes print_log_to_window(logger::log* log_p);
 	};
 }

@@ -200,16 +200,14 @@ LRESULT logger::dx_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARAM wPa
 }
 
 logger::classic_log_window::classic_log_window()
+    :base(LOGGER_LINES)
 {
     
 }
 
 logger::classic_log_window::~classic_log_window()
 {
-    if (m_backBufferDC != nullptr) 
-        DeleteDC(m_backBufferDC);
-    if (m_backBufferBitmap != nullptr) 
-        DeleteObject(m_backBufferBitmap);
+    
 }
 
 logger::codes logger::classic_log_window::load()
@@ -248,22 +246,8 @@ logger::codes logger::classic_log_window::load()
     if (GetClientRect(m_handle, &wl_rect) == FALSE) {
         return codes::get_client_rect_fail;
     }
-    int height = wl_rect.bottom - wl_rect.top;
-    recreate_backbuffer(m_handle, m_xClientMax, height);
 
     return codes::success;
-}
-
-void logger::classic_log_window::send_log(logger::log* log_p)
-{
-    {
-        std::lock_guard<std::mutex> local_lock(m_message_mtx);
-        log_foundation.set_message(*log_p->message);
-    }
-
-    // print the new log to the window
-    print_log_to_window(log_p);
-
 }
 
 void logger::classic_log_window::thread_go()
@@ -298,240 +282,26 @@ logger::codes logger::classic_log_window::wait_until_init()
     return codes::success;
 }
 
-std::size_t logger::classic_log_window::get_time_length()
-{
-    string time = time_stamped(ROS(""));
-    return time.size();
-}
-
-void logger::classic_log_window::draw_logs_to_backbuffer(HDC hdc, std::vector<log*>* log_vp)
-{
-    std::lock_guard<std::mutex> local_lock(m_message_mtx);
-
-    // get window dimensions
-    RECT wl_rect = {};
-    if (GetClientRect(m_handle, &wl_rect) == FALSE) {
-        throw le(codes::get_client_rect_fail, get_client_rect_fail_description);
-    }
-
-    RECT white_background = { wl_rect.left,wl_rect.top,m_backBufferWidth ,m_backBufferHeight };
-    FillRect(hdc, &white_background , (HBRUSH)(COLOR_WINDOW + 1));
-
-    int window_height = wl_rect.bottom - wl_rect.top;
-    int window_width = wl_rect.right - wl_rect.left;
-
-    // build indivdual rects for each log message
-    std::size_t v_pos = static_cast<std::size_t>(std::abs(m_vscroll_position));
-    std::size_t logs_to_print = calculate_logs_to_print(log_vp, v_pos, static_cast<std::size_t>(window_height));
-    std::size_t first_line = v_pos;
-    std::size_t last_line = v_pos + logs_to_print;
-    build_rects(log_vp, first_line, last_line, &wl_rect);
-
-    // write to terminal window
-    for (std::size_t i = first_line; i < last_line and i < log_vp->size(); ++i) {
-        // get log pointer
-        auto log = log_vp->at(i);
-        log->m_fresh_message.store(false); // no longer a fresh message
-
-        // Draw the text onto the memory DC
-        logger::codes code = send_text(hdc, log->message, log->window_position);
-        if (code != codes::success) {
-            throw le(code, le::match_code(code));
-        }
-    }
-}
-
-void logger::classic_log_window::recreate_backbuffer(HWND handle, int width, int height)
-{
-    if (m_backBufferDC) {
-        DeleteDC(m_backBufferDC);
-        m_backBufferDC = nullptr;
-    }
-    if (m_backBufferBitmap) {
-        DeleteObject(m_backBufferBitmap);
-        m_backBufferBitmap = nullptr;
-    }
-
-    HDC hdcWindow = GetDC(handle);
-    m_backBufferDC = CreateCompatibleDC(hdcWindow);
-    m_backBufferBitmap = CreateCompatibleBitmap(hdcWindow, width, height);
-    SelectObject(m_backBufferDC, m_backBufferBitmap);
-    ReleaseDC(handle, hdcWindow);
-
-    m_backBufferWidth = width;
-    m_backBufferHeight = height;
-}
-
-void logger::classic_log_window::horizontal_scrolling(WPARAM wParam)
-{
-    SCROLLINFO si = {};
-    si.cbSize = sizeof(si);
-    si.fMask = SIF_ALL;
-    if (GetScrollInfo(m_handle, SB_HORZ, &si) == FALSE) {
-        throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
-    }
-
-    m_hscroll_position = si.nPos;
-    switch (LOWORD(wParam))
-    {
-        // User clicked the left arrow.
-    case SB_LINELEFT:
-        si.nPos -= 1;
-        break;
-
-        // User clicked the right arrow.
-    case SB_LINERIGHT:
-        si.nPos += 1;
-        break;
-
-        // User clicked the scroll bar shaft left of the scroll box.
-    case SB_PAGELEFT:
-        si.nPos -= si.nPage;
-        break;
-
-        // User clicked the scroll bar shaft right of the scroll box.
-    case SB_PAGERIGHT:
-        si.nPos += si.nPage;
-        break;
-
-        // User dragged the scroll box.
-    case SB_THUMBTRACK:
-        si.nPos = si.nTrackPos;
-        break;
-
-    default:
-        break;
-    }
-
-    si.fMask = SIF_POS;
-    SetScrollInfo(m_handle, SB_HORZ, &si, FALSE);
-    if (GetScrollInfo(m_handle, SB_VERT, &si) == FALSE) {
-        throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
-    }
-
-    m_delta_h_scroll = m_xChar * (m_hscroll_position - si.nPos );
-    
-    InvalidateRect(m_handle, NULL, FALSE);
-    UpdateWindow(m_handle);
-}
-
-void logger::classic_log_window::vertical_scrolling(WPARAM wParam)
-{
-    // Get all the vertial scroll bar information.
-    SCROLLINFO si = {};
-    si.cbSize = sizeof(si);
-    si.fMask = SIF_ALL;
-    if (GetScrollInfo(m_handle, SB_VERT, &si) == FALSE) {
-        throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
-    }
-
-    // Save the position for comparison later on.
-    m_vscroll_position = si.nPos;
-    switch (LOWORD(wParam))
-    {
-
-        // User clicked the HOME keyboard key.
-    case SB_TOP:
-        si.nPos = si.nMin;
-        break;
-
-        // User clicked the END keyboard key.
-    case SB_BOTTOM:
-        si.nPos = si.nMax;
-        break;
-
-        // User clicked the top arrow.
-    case SB_LINEUP:
-        si.nPos -= 1;
-        break;
-
-        // User clicked the bottom arrow.
-    case SB_LINEDOWN:
-        si.nPos += 1;
-        break;
-
-        // User clicked the scroll bar shaft above the scroll box.
-    case SB_PAGEUP:
-        si.nPos -= si.nPage;
-        break;
-
-        // User clicked the scroll bar shaft below the scroll box.
-    case SB_PAGEDOWN:
-        si.nPos += si.nPage;
-        break;
-
-        // User dragged the scroll box.
-    case SB_THUMBTRACK:
-        si.nPos = si.nTrackPos;
-        break;
-
-    default:
-        break;
-    }
-
-    // Set the position and then retrieve it.  Due to adjustments
-    // by Windows it may not be the same as the value set.
-    si.fMask = SIF_POS;
-    SetScrollInfo(m_handle, SB_VERT, &si, FALSE);
-    if (GetScrollInfo(m_handle, SB_VERT, &si) == FALSE) {
-        throw le(codes::get_scroll_info_fail, get_scroll_info_fail_description);
-    }
-
-    m_delta_v_scroll = m_yChar * (m_vscroll_position - si.nPos );
-
-    if (si.nPos != m_vscroll_position) {
-        if (ScrollWindow(m_handle, 0, m_delta_v_scroll, NULL, NULL) == FALSE) {
-            throw le(codes::scroll_window_fail, scroll_window_fail_description);
-        }
-    }
-
-    auto log_buffer = log_foundation.get_buffer();
-    draw_logs_to_backbuffer(m_backBufferDC, log_buffer);
-
-    // repaint
-    InvalidateRect(m_handle, NULL, FALSE);
-    UpdateWindow(m_handle);
-}
-
-logger::codes logger::classic_log_window::print_log_to_window(logger::log* log_p)
-{
-    logger::log_page::update(log_p);
-    if (log_page::m_height > m_backBufferHeight) {
-        ScrollWindowEx(m_handle, 0, log_p->m_height, nullptr, nullptr, nullptr, nullptr, SW_INVALIDATE);
-        SetScrollPos(m_handle, SB_VERT, log_p->m_lines, TRUE);
-    }
-    else {
-        // repaint
-        InvalidateRect(m_handle, NULL, FALSE);
-    }
-    auto log_buffer = log_foundation.get_buffer();
-    draw_logs_to_backbuffer(m_backBufferDC, log_buffer);
-    UpdateWindow(m_handle);
-    
-    return codes::success;
-}
-
-logger::q_sys_inits logger::classic_log_window::get_qsys_inits()
-{
-    q_sys_inits init = {};
-    init.vp = log_foundation.get_buffer();
-    init.mtx_p = log_foundation.get_v_buffer_mtx();
-    return init;
-}
-
 LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     
 
     try {
+        SCROLLINFO si;
+        HDC hdc;
+        PAINTSTRUCT ps;
+        TEXTMETRIC tm;
+
+        int FirstLine;          // first line in the invalidated area 
+        int LastLine;           // last line in the invalidated area 
+
+        int i;                  // loop counter 
+        int x, y;               // horizontal and vertical coordinates
+
         switch (uMsg) {
 
             case WM_CREATE:
             {
                 // GET TEXT SIZES when the window is first created.
-                
-                // objects needed
-                HDC hdc;
-                TEXTMETRIC tm;
 
                 // Get the handle to the client area's device context. 
                 hdc = GetDC(m_handle);
@@ -555,7 +325,7 @@ LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARA
                 // max log size
                 m_xClientMax = LOG_LENGTH * m_xChar;
               
-                break;
+                return 0;
             }
 
             case WM_SHOWWINDOW:
@@ -568,59 +338,190 @@ LRESULT logger::classic_log_window::this_window_proc(HWND hwnd, UINT uMsg, WPARA
                     m_wait_b.store(true);
                     m_wait_cv.notify_all();
                 }
-                break;
+                
+                return 0;
             }
 
             case WM_SIZE:
             {
-                // update scroll params when window size changes
-                logger::codes code = window_size_change(m_handle, lParam, m_nol, m_yChar, m_xChar, m_xClientMax);
-                if (code != logger::codes::success) {
-                    throw le(code, le::match_code(code));
-                }
                 // Retrieve the dimensions of the client area. 
-                int yClient = HIWORD(lParam);
-                int xClient = LOWORD(lParam);
-                recreate_backbuffer(hwnd, m_xClientMax, yClient);
+                m_yClient = HIWORD(lParam);
+                m_xClient = LOWORD(lParam);
 
-                auto log_buffer = log_foundation.get_buffer();
-                draw_logs_to_backbuffer(m_backBufferDC, log_buffer);
-                break;
+                // Set the vertical scrolling range and page size
+                si.cbSize = sizeof(si);
+                si.fMask = SIF_RANGE | SIF_PAGE;
+                si.nMin = 0;
+                si.nMax = LOGGER_LINES - 1;
+                si.nPage = m_yClient / m_yChar;
+                SetScrollInfo(hwnd, SB_VERT, &si, TRUE);
+
+                // Set the horizontal scrolling range and page size. 
+                si.cbSize = sizeof(si);
+                si.fMask = SIF_RANGE | SIF_PAGE;
+                si.nMin = 0;
+                si.nMax = 2 + m_xClientMax / m_xChar;
+                si.nPage = m_xClient / m_xChar;
+                SetScrollInfo(hwnd, SB_HORZ, &si, TRUE);
+                
+                return 0;
             }
 
             case WM_HSCROLL:
             {
-                // handle scrolling in the horizontal direction
-                horizontal_scrolling(wParam);
-                break;
+                // Get all the vertial scroll bar information.
+                si.cbSize = sizeof(si);
+                si.fMask = SIF_ALL;
+
+                // Save the position for comparison later on.
+                GetScrollInfo(hwnd, SB_HORZ, &si);
+                m_xPos = si.nPos;
+                switch (LOWORD(wParam))
+                {
+                    // User clicked the left arrow.
+                case SB_LINELEFT:
+                    si.nPos -= 1;
+                    break;
+
+                    // User clicked the right arrow.
+                case SB_LINERIGHT:
+                    si.nPos += 1;
+                    break;
+
+                    // User clicked the scroll bar shaft left of the scroll box.
+                case SB_PAGELEFT:
+                    si.nPos -= si.nPage;
+                    break;
+
+                    // User clicked the scroll bar shaft right of the scroll box.
+                case SB_PAGERIGHT:
+                    si.nPos += si.nPage;
+                    break;
+
+                    // User dragged the scroll box.
+                case SB_THUMBTRACK:
+                    si.nPos = si.nTrackPos;
+                    break;
+
+                default:
+                    break;
+                }
+
+                // Set the position and then retrieve it.  Due to adjustments
+                // by Windows it may not be the same as the value set.
+                si.fMask = SIF_POS;
+                SetScrollInfo(hwnd, SB_HORZ, &si, TRUE);
+                GetScrollInfo(hwnd, SB_HORZ, &si);
+
+                // If the position has changed, scroll the window.
+                if (si.nPos != m_xPos)
+                {
+                    ScrollWindow(hwnd, m_xChar * (m_xPos - si.nPos), 0, NULL, NULL);
+                }
+
+                return 0;
             }
 
             case WM_VSCROLL:
             {
-                // handle scrolling in the vertical direction
-                vertical_scrolling(wParam);
-                break;
+                // Get all the vertial scroll bar information.
+                si.cbSize = sizeof(si);
+                si.fMask = SIF_ALL;
+                GetScrollInfo(hwnd, SB_VERT, &si);
+
+                // Save the position for comparison later on.
+                m_yPos = si.nPos;
+                switch (LOWORD(wParam))
+                {
+
+                    // User clicked the HOME keyboard key.
+                case SB_TOP:
+                    si.nPos = si.nMin;
+                    break;
+
+                    // User clicked the END keyboard key.
+                case SB_BOTTOM:
+                    si.nPos = si.nMax;
+                    break;
+
+                    // User clicked the top arrow.
+                case SB_LINEUP:
+                    si.nPos -= 1;
+                    break;
+
+                    // User clicked the bottom arrow.
+                case SB_LINEDOWN:
+                    si.nPos += 1;
+                    break;
+
+                    // User clicked the scroll bar shaft above the scroll box.
+                case SB_PAGEUP:
+                    si.nPos -= si.nPage;
+                    break;
+
+                    // User clicked the scroll bar shaft below the scroll box.
+                case SB_PAGEDOWN:
+                    si.nPos += si.nPage;
+                    break;
+
+                    // User dragged the scroll box.
+                case SB_THUMBTRACK:
+                    si.nPos = si.nTrackPos;
+                    break;
+
+                default:
+                    break;
+                }
+
+                // Set the position and then retrieve it.  Due to adjustments
+                // by Windows it may not be the same as the value set.
+                si.fMask = SIF_POS;
+                SetScrollInfo(hwnd, SB_VERT, &si, TRUE);
+                GetScrollInfo(hwnd, SB_VERT, &si);
+
+                // If the position has changed, scroll window and update it.
+                if (si.nPos != m_yPos)
+                {
+                    ScrollWindow(hwnd, 0, m_yChar * (m_yPos - si.nPos), NULL, NULL);
+                    UpdateWindow(hwnd);
+                }
+
+                return 0;
             }
 
             case WM_PAINT:
             {   
-                PAINTSTRUCT ps;
-                HDC hdc = BeginPaint(hwnd, &ps);
+                // Prepare the window for painting.
+                hdc = BeginPaint(hwnd, &ps);
 
-                // --- Blit from back buffer to window, based on horizontal scroll ---
-                BitBlt(
-                    hdc,            // destination DC (screen)
-                    0, 0,           // destination X, Y
-                    m_backBufferWidth,    // width to draw
-                    m_backBufferHeight,   // height to draw
-                    m_backBufferDC,          // source DC (back buffer)
-                    m_delta_h_scroll, 0,     // source X, Y (offset by scroll position)
-                    SRCCOPY         // raster op
-                );
+                // Get vertical scroll bar position.
+                si.cbSize = sizeof(si);
+                si.fMask = SIF_POS;
+                GetScrollInfo(hwnd, SB_VERT, &si);
+                m_yPos = si.nPos;
 
+                // Get horizontal scroll bar position.
+                GetScrollInfo(hwnd, SB_HORZ, &si);
+                m_xPos = si.nPos;
+
+                // Find painting limits.
+                FirstLine = std::max(0, m_yPos + (int)ps.rcPaint.top / m_yChar);
+                LastLine = std::min(LOGGER_LINES - 1, m_yPos + (int)ps.rcPaint.bottom / m_yChar);
+
+                for (i = FirstLine; i <= LastLine; i++)
+                {
+                    x = m_xChar * (1 - m_xPos);
+                    y = m_yChar * (i - m_yPos);
+
+                    auto log = base::get_buffer()->at(i);
+
+                    // Write a line of text to the client area.
+                    TextOut(hdc, x, y, log->message->c_str(), log->message->size());
+                }
+
+                // Indicate that painting is finished.
                 EndPaint(hwnd, &ps);
-
-                break;
+                return 0;
             }
         } // end of switch
     }

@@ -6,7 +6,6 @@
 *  Project: core
 * *************************************/
 
-
 #include CORE_NAMES_INCLUDE
 #include CORE_ERROR_UTILS_INCLUDE_PATH
 

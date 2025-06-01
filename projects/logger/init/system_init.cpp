@@ -76,13 +76,7 @@ logger::codes logger::exit_system_log()
 logger::system_log::system_log()
 {
 	try {
-		log_terminal = new logger::classic_log_window;
-		log_terminal->load();
-
-		m_lq = new logger::log_q(log_terminal);
-		m_qsys_thread = new std::thread(&logger::log_q::process_messages, m_lq);
-
-		alloc_new_logs();
+		logger::classic_log_window::load();
 	}
 	catch (const logger::le& e) {
 		string output = ROS("DESCRIPTION: ") + e.m_desc + ROS('\n') + ROS("WINDOWS ERROR: ") + e.m_w32
@@ -99,64 +93,20 @@ logger::system_log::system_log()
 
 logger::system_log::~system_log()
 {	
-	dealloc_logs();
 
-	if (m_qsys_thread->joinable())
-		m_qsys_thread->join();
-
-	if (m_qsys_thread != nullptr) {
-		delete m_qsys_thread;
-		m_qsys_thread = nullptr;
-	}
-
-	if (m_lq != nullptr) {
-		delete m_lq;
-		m_lq = nullptr;
-	}
-
-	if (log_terminal != nullptr) {
-		delete log_terminal;
-		log_terminal = nullptr;
-	}
 }
 
-void logger::system_log::system_log_flush()
+void logger::system_log::log_message(const string& message)
 {
-	m_lq->m_signal_b.store(true);
-	m_lq->m_signal_cv.notify_all();
-}
-
-void logger::system_log::alloc_new_logs()
-{
-	for (std::size_t i = 0; i < LOGGER_LINES; ++i) {
-		logger::log* log_p = new log(i);
-		m_logp_v.push_back(log_p);
-	}
-}
-
-void logger::system_log::dealloc_logs()
-{
-	for (auto log : m_logp_v) {
-		if (log != nullptr) {
-			delete log;
-			log = nullptr;
-		}
-	}
-
-	m_logp_v.erase(m_logp_v.begin(), m_logp_v.end());
-}
-
-std::size_t logger::system_log::at_index()
-{
-	if (m_index < m_logp_v.size() - 1) {
-		m_index++;
-	}
-	else {
-		m_index = 0;
-		return m_index;
-	}
-
-	return std::size_t(m_index-1);
+	// get current log
+	logger::log* log_p = nullptr;
+	std::size_t index = 0;
+	
+	index = base::get_v_index();
+	log_p = base::get_buffer()->at(index);
+	*log_p->message = message;
+	
+	base::set_log(log_p);
 }
 
 #endif
