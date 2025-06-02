@@ -117,6 +117,7 @@ int WINAPI wWinMain(
 	return static_cast<int>(core::codes::success);
 }
 
+// defined in depend/macro/types.hpp
 #elif TEST_ENTRY
 
 int WINAPI wWinMain(
@@ -125,10 +126,28 @@ int WINAPI wWinMain(
 	_In_ LPWSTR lpCmdLine,
 	_In_ int nShowCmd
 ) {
-	logger::glb_sl->get_terminal_p()->wait_until_init();
+	// global logger
+	logger::glb_sl = std::make_unique<logger::system_log>();
+	logger::glb_sl->wait_until_init();
 
-	logger::codes code = test::classic_log_terminal(10,1);
-	return static_cast<int>(code);
+    std::future<logger::codes> result = std::async(
+        std::launch::async,
+        static_cast<logger::codes(*)(std::size_t, std::size_t)>(test::classic_log_terminal),
+        static_cast<std::size_t>(100),
+        static_cast<std::size_t>(0)
+    );
+
+	// Run the message loop.
+	MSG msg = { };
+	while (GetMessage(&msg, 0, 0, 0) > 0)
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+
+	logger::codes return_value = result.get(); // Waits for completion and gets the value
+	return static_cast<int>(return_value);
 }
 
 

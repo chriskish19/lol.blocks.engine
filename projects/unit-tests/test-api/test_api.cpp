@@ -57,12 +57,17 @@ logger::codes TEST_API test::classic_log_terminal(std::size_t seconds, std::size
     return logger::exit_system_log();
 
 #else
-
+    std::mutex local_mtx;
     random data(32, 126);
     auto end_time = std::chrono::steady_clock::now() + std::chrono::seconds(seconds);
     while (std::chrono::steady_clock::now() < end_time) {
         string message = data.random_data_string(LOG_LENGTH - logger::glb_sl->m_ts_length);
-        logger::glb_sl->log_message(message);
+        
+        {
+            std::unique_lock<std::mutex> local_lock;
+            logger::glb_sl->log_message(message);
+        }
+        
         std::this_thread::sleep_for(std::chrono::seconds(pause));
     }
     return logger::codes::success;

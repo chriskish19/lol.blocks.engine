@@ -38,7 +38,6 @@ namespace logger {
         ~system_log();
 
         void log_message(const string& message);
-        
     };
 
     // global system logger object

@@ -107,6 +107,9 @@ void logger::system_log::log_message(const string& message)
 	*log_p->message = message;
 	
 	base::set_log(log_p);
+
+	InvalidateRect(m_handle, nullptr, false);
+	UpdateWindow(m_handle);
 }
 
 #endif
