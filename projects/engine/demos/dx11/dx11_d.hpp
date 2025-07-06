@@ -264,7 +264,7 @@ namespace engine {
 			codes load_content();
 			void unload_content();
 			void update(float dt);
-			void render();
+			void render(float dt);
 		protected:
 			// solid color vertex shader
 			ID3D11VertexShader* m_sc_vs = nullptr;
@@ -299,6 +299,7 @@ namespace engine {
 			{
 				DirectX::XMMATRIX view;
 				DirectX::XMMATRIX projection;
+				DirectX::XMMATRIX world;
 			};
 
 			// camera constant buffer gpu side
@@ -316,6 +317,31 @@ namespace engine {
 			// for mouse cursor switch states
 			// (switch mouse mode)
 			bool m_smm = false;
+
+			struct TimeBufferType
+			{
+				float gTime;
+				float padding[3]; // Padding to align to 16 bytes (required by HLSL constant buffer rules)
+			};
+
+			ID3D11Buffer* m_timeBuffer = nullptr;
+
+			float m_rotationAngle = 0.0f;
+
+			struct CubePhysicsData {
+				DirectX::XMFLOAT4 position;   // xyz = position, w = unused
+				DirectX::XMFLOAT4 velocity;   // xyz = velocity, w = unused
+			};
+
+			TimeBufferType m_timeData = {};
+
+			std::shared_ptr<DirectX::EffectFactory> m_fxFactory;
+
+			std::unique_ptr<DirectX::DX11::Model> m_datson_model;
+
+			std::unique_ptr<DirectX::CommonStates> m_common_states;
+
+			ID3D11DepthStencilView* m_p_dsv = nullptr;
 		};
 
 	} // dx11 namespace 

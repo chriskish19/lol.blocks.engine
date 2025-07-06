@@ -58,7 +58,7 @@ int WINAPI wWinMain(
 			}
 		}
 
-		std::chrono::high_resolution_clock::time_point lastTime;
+		std::chrono::high_resolution_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
 		MSG msg = { 0 };
 		while (msg.message != WM_QUIT)
 		{
@@ -74,7 +74,7 @@ int WINAPI wWinMain(
 				lastTime = now;
 
 				dx11_demo->update(deltaTime);
-				dx11_demo->render();
+				dx11_demo->render(deltaTime);
 			}
 		}
 	}

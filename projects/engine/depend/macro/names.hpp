@@ -23,6 +23,7 @@
 // classes
 #define ENGINE_DX11CAM_INCLUDE_PATH					ENGINE_dx11_camera_hpp					// direct x 11 camera
 #define ENGINE_DX11SETUP_INCLUDE_PATH				ENGINE_sdx11_hpp						// direct x 11 setup
+#define ENGINE_DX11_TIME_INCLUDE_PATH				ENGINE_dx11_time_hpp					// direct x 11 time
 
 // error
 #define ENGINE_CODES_INCLUDE_PATH					ENGINE_codes_hpp						// error codes
@@ -32,6 +33,9 @@
 
 // api helper
 #define ENGINE_API_INCLUDE_PATH						ENGINE_engine_api_hpp					// helper functions
+
+// physics engine
+#define ENGINE_BASE_PHYSICS_INCLUDE_PATH			ENGINE_base_hpp							// physics foundation
 
 
 
@@ -55,4 +59,5 @@
 #define ENGINE_TX_GRAPH										ENGINE_graph_png
 #define ENGINE_TX_STICK										ENGINE_stick_png						// stickman sprite
 
+#define ENGINE_ASSET_DATSON_FILE_PATH						ENGINE_datson_sdkmesh					// datson car 3d model
 // }

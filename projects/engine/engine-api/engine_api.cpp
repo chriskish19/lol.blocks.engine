@@ -805,7 +805,7 @@ engine::string engine::gl(std::source_location sl)
 #if WIDE
     // convert to wide string
     engine::codes code;
-    std::wstring wide_return = to_wide_string(temp);
+    std::wstring wide_return = to_wide_string(temp,&code);
     return wide_return;
 #else
     return temp;
