@@ -2131,13 +2131,13 @@ engine::codes engine::dx11::cube_demo::load_content()
 
 	// Create an EffectFactory for loading textures
 	m_fxFactory = std::make_shared<DirectX::EffectFactory>(m_p_dd->pDevice);
-	m_fxFactory->SetDirectory(L"C:\\Users\\chris\\source\\repos\\lol.blocks.engine\\projects\\engine\\demos\\dx11\\assets\\textures\\datson_car"); 
+	m_fxFactory->SetDirectory(L"C:\\Users\\chris\\source\\repos\\lol.blocks.engine\\projects\\engine\\demos\\dx11\\assets\\textures"); 
 
 	// Load the model from .sdkmesh file
 	m_datson_model = DirectX::Model::CreateFromSDKMESH(m_p_dd->pDevice, ENGINE_ASSET_DATSON_FILE_PATH, *m_fxFactory);
+	m_terrain_model = DirectX::Model::CreateFromSDKMESH(m_p_dd->pDevice, ENGINE_ASSET_MOUNTIAN_FILE_PATH, *m_fxFactory);
 
 	m_common_states = std::make_unique<DirectX::CommonStates>(m_p_dd->pDevice);
-
 
 	return codes::success;
 }
@@ -2198,19 +2198,27 @@ void engine::dx11::cube_demo::render(float dt)
 	m_p_dd->pImmediateContext->OMSetRenderTargets(1, &m_p_rtv, m_p_dsv);
 
 
-	float clear_color[4] = { 0.0f, 0.0f, 0.25f, 1.0f };
+	float clear_color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	m_p_dd->pImmediateContext->ClearRenderTargetView(m_p_rtv, clear_color);
 	
 	// Clear depth buffer 
 	m_p_dd->pImmediateContext->ClearDepthStencilView(m_p_dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+
+	// Set blend, rasterizer, depth states
+	m_p_dd->pImmediateContext->OMSetBlendState(m_common_states->Opaque(), nullptr, 0xFFFFFFFF);
+	m_p_dd->pImmediateContext->RSSetState(m_common_states->CullCounterClockwise());
+	m_p_dd->pImmediateContext->OMSetDepthStencilState(m_common_states->DepthDefault(), 0);
+
 	unsigned int stride = sizeof(DirectX::XMFLOAT3);
 	unsigned int offset = 0;
 
 	m_p_dd->pImmediateContext->IASetInputLayout(m_il);
 	
-	DirectX::XMMATRIX world = DirectX::XMMatrixRotationY(m_rotationAngle);
+	// spins the world
+	// DirectX::XMMATRIX world = DirectX::XMMatrixRotationY(m_rotationAngle);
+	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
 	CameraBuffer cb = {};
 	cb.world = DirectX::XMMatrixTranspose(world);
@@ -2230,16 +2238,8 @@ void engine::dx11::cube_demo::render(float dt)
 	m_p_dd->pImmediateContext->PSSetShader(m_sc_ps, 0, 0);
 	m_p_dd->pImmediateContext->Draw(static_cast<UINT>(m_cube_vertices.size()), 0);
 
-
-	
-
-	// Set blend, rasterizer, depth states
-	m_p_dd->pImmediateContext->OMSetBlendState(m_common_states->Opaque(), nullptr, 0xFFFFFFFF);
-	m_p_dd->pImmediateContext->RSSetState(m_common_states->CullCounterClockwise());  // or CullNone() to test
-	m_p_dd->pImmediateContext->OMSetDepthStencilState(m_common_states->DepthDefault(), 0);
-
 	m_datson_model->Draw(m_p_dd->pImmediateContext, *m_common_states, world, m_cam.GetViewMatrix(), m_cam.GetProjectionMatrix());
-
+	m_terrain_model->Draw(m_p_dd->pImmediateContext, *m_common_states, world, m_cam.GetViewMatrix(), m_cam.GetProjectionMatrix());
 
 	m_p_dd->pSwapChain->Present(1, 0);
 }

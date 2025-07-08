@@ -338,6 +338,7 @@ namespace engine {
 			std::shared_ptr<DirectX::EffectFactory> m_fxFactory;
 
 			std::unique_ptr<DirectX::DX11::Model> m_datson_model;
+			std::unique_ptr<DirectX::DX11::Model> m_terrain_model;
 
 			std::unique_ptr<DirectX::CommonStates> m_common_states;
 

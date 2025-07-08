@@ -60,4 +60,5 @@
 #define ENGINE_TX_STICK										ENGINE_stick_png						// stickman sprite
 
 #define ENGINE_ASSET_DATSON_FILE_PATH						ENGINE_datson_sdkmesh					// datson car 3d model
+#define ENGINE_ASSET_MOUNTIAN_FILE_PATH						ENGINE_mountain_sdkmesh					// terrian model 3d
 // }
