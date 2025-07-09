@@ -125,6 +125,10 @@ target_link_libraries(${logs}
 # directx toolkit
 find_package(directxtk CONFIG REQUIRED)
 
+# assimp loader
+find_package(assimp CONFIG REQUIRED)
+
+
 # engine is linked lib
 # get engine source and header files
 file(GLOB_RECURSE engine_sf "../projects/engine/*.cpp") # engine_sf (engine source files)
@@ -198,6 +202,7 @@ target_link_libraries(${engine}
     Microsoft::DirectXTK
     runtimeobject
     ${logs}
+    assimp::assimp
 )
 #############################
 # End of Engine library
