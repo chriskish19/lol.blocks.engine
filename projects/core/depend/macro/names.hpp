@@ -21,7 +21,7 @@
 #define CORE_WINDOW_INCLUDE_PATH				CORE_c_window_hpp					// win32 window class
 
 // api helper functions
-#define CORE_FUNCTIONS_INCLUDE_PATH				CORE_c_funcs_hpp					// helper functions
+#define CORE_FUNCTIONS_INCLUDE_PATH				CORE_core_funcs_hpp					// helper functions
 
 // error
 #define CORE_CODES_INCLUDE_PATH					CORE_codes_hpp						// error codes

@@ -328,11 +328,6 @@ namespace engine {
 
 			float m_rotationAngle = 0.0f;
 
-			struct CubePhysicsData {
-				DirectX::XMFLOAT4 position;   // xyz = position, w = unused
-				DirectX::XMFLOAT4 velocity;   // xyz = velocity, w = unused
-			};
-
 			TimeBufferType m_timeData = {};
 
 			std::shared_ptr<DirectX::EffectFactory> m_fxFactory;

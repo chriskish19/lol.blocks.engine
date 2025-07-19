@@ -12,13 +12,23 @@
 
 namespace engine {
 	namespace dx11 {
+		struct CubePhysicsData {
+			DirectX::XMFLOAT3 position;   // xyz = position
+			DirectX::XMFLOAT3 velocity;   // xyz = velocity
+		};
+
+		std::vector<CubePhysicsData> find_new_position(float dt, float mass, float velocity);
+
+
 		class ENGINE_API base_physics {
 		public:
 			base_physics() {};
 			
-
+			void update(float dt);
 		protected:
-			
+
+
+			std::vector<CubePhysicsData> m_data;
 		};
 	}
 }

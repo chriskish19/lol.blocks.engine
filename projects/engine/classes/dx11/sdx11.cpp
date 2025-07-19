@@ -1,3 +1,4 @@
+#include "sdx11.hpp"
 /***************************************
 *  File: sdx11.cpp (setup direct x 11)
 *

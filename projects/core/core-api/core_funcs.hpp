@@ -1,5 +1,5 @@
 /***************************************
-*  File: c_funcs.hpp (core functions)
+*  File: core_funcs.hpp
 *
 *  Purpose: helper functions
 *
