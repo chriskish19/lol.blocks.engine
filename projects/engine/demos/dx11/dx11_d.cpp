@@ -1,3 +1,4 @@
+#include "dx11_d.hpp"
 /***************************************
 *  File: dx11_d.cpp (direct x 11 demos)
 *
@@ -2072,9 +2073,11 @@ engine::codes engine::dx11::cube_demo::load_content()
 
 
 	D3D11_BUFFER_DESC vertexDesc = {};
-	vertexDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexDesc.Usage = D3D11_USAGE_DYNAMIC;
 	vertexDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexDesc.ByteWidth = static_cast<UINT>(sizeof(DirectX::XMFLOAT3) * m_cube_vertices.size());
+	vertexDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vertexDesc.MiscFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA resourceData = {};
 	resourceData.pSysMem = m_cube_vertices.data();
@@ -2186,11 +2189,11 @@ void engine::dx11::cube_demo::update(float dt)
 	if (m_rotationAngle > DirectX::XM_2PI)
 		m_rotationAngle -= DirectX::XM_2PI;
 
-	
+	m_timeData.gTime += dt;
 	
 }
 
-void engine::dx11::cube_demo::render(float dt)
+void engine::dx11::cube_demo::render()
 {
 	if (m_p_dd->pImmediateContext == nullptr)
 		return;
@@ -2227,7 +2230,7 @@ void engine::dx11::cube_demo::render(float dt)
 	m_p_dd->pImmediateContext->UpdateSubresource(m_cameraCB, 0, nullptr, &cb, 0, 0);
 	
 
-	m_timeData.gTime += dt;
+	
 	m_p_dd->pImmediateContext->UpdateSubresource(m_timeBuffer, 0, nullptr, &m_timeData, 0, 0);
 
 	m_p_dd->pImmediateContext->PSSetConstantBuffers(0, 1, &m_timeBuffer);
@@ -2242,4 +2245,27 @@ void engine::dx11::cube_demo::render(float dt)
 	m_terrain_model->Draw(m_p_dd->pImmediateContext, *m_common_states, world, m_cam.GetViewMatrix(), m_cam.GetProjectionMatrix());
 
 	m_p_dd->pSwapChain->Present(1, 0);
+}
+
+void engine::dx11::cube_physics::update(float dt) {
+	cube_demo::update(dt);
+
+	m_cube_vertices = x_move(dt * 0.05f, m_cube_vertices);
+
+	// Assume m_pVertexBuffer is your ID3D11Buffer* created as D3D11_USAGE_DYNAMIC
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	HRESULT hr = m_p_dd->pImmediateContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (SUCCEEDED(hr))
+	{
+		// Copy updated vertex data from CPU to GPU
+		memcpy(mappedResource.pData, m_cube_vertices.data(), m_cube_vertices.size() * sizeof(DirectX::XMFLOAT3));
+
+		// Unlock the buffer
+		m_p_dd->pImmediateContext->Unmap(m_vb, 0);
+	}
+}
+
+void engine::dx11::cube_physics::render()
+{
+	cube_demo::render();
 }

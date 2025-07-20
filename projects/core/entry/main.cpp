@@ -49,7 +49,7 @@ int WINAPI wWinMain(
 			}
 		}
 
-		dx11_demo = std::make_unique<engine::dx11::cube_demo>(window->handle(), window->width(), window->height());
+		dx11_demo = std::make_unique<engine::dx11::cube_physics>(window->handle(), window->width(), window->height());
 		{
 			engine::codes code = dx11_demo->load_content();
 			engine::output_code(code);
@@ -74,7 +74,7 @@ int WINAPI wWinMain(
 				lastTime = now;
 
 				dx11_demo->update(deltaTime);
-				dx11_demo->render(deltaTime);
+				dx11_demo->render();
 			}
 		}
 	}

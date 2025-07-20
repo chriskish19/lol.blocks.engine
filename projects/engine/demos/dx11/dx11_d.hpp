@@ -15,6 +15,8 @@
 #include ENGINE_DX11CAM_INCLUDE_PATH
 #include ENGINE_API_INCLUDE_PATH
 #include ENGINE_DX11_DEMO_SHAPES_INCLUDE_PATH
+#include ENGINE_BASE_PHYSICS_INCLUDE_PATH
+
 
 
 // logging library
@@ -263,8 +265,8 @@ namespace engine {
 
 			codes load_content();
 			void unload_content();
-			void update(float dt);
-			void render(float dt);
+			virtual void update(float dt);
+			virtual void render();
 		protected:
 			// solid color vertex shader
 			ID3D11VertexShader* m_sc_vs = nullptr;
@@ -340,5 +342,16 @@ namespace engine {
 			ID3D11DepthStencilView* m_p_dsv = nullptr;
 		};
 
+		class ENGINE_API cube_physics : public cube_demo , public physics{
+		public:
+			cube_physics(HWND handle, UINT width, UINT height)
+				:cube_demo(handle,width,height){ }
+
+			void update(float dt) override;
+			void render() override;
+		protected:
+
+
+		};
 	} // dx11 namespace 
 } // engine namespace

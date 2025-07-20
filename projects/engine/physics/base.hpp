@@ -12,23 +12,25 @@
 
 namespace engine {
 	namespace dx11 {
-		struct CubePhysicsData {
-			DirectX::XMFLOAT3 position;   // xyz = position
-			DirectX::XMFLOAT3 velocity;   // xyz = velocity
-		};
-
-		std::vector<CubePhysicsData> find_new_position(float dt, float mass, float velocity);
-
-
-		class ENGINE_API base_physics {
+		
+		class ENGINE_API physics {
 		public:
-			base_physics() {};
+			physics() {};
 			
 			void update(float dt);
 		protected:
+			const float m_gravity = 10.0f;
+			
+			float m_momentum = 0.0f;
+			float m_force = 0.0f;
+			float m_acceleration = 0.0f;
+			float m_velocity = 0.0f;
 
+			std::vector<DirectX::XMFLOAT3> x_move(float x, const std::vector<DirectX::XMFLOAT3>& v);
+			std::vector<DirectX::XMFLOAT3> y_move(float y, const std::vector<DirectX::XMFLOAT3>& v);
+			std::vector<DirectX::XMFLOAT3> z_move(float z, const std::vector<DirectX::XMFLOAT3>& v);
 
-			std::vector<CubePhysicsData> m_data;
+			std::vector<DirectX::XMFLOAT3> move(DirectX::XMFLOAT3 direction, const std::vector<DirectX::XMFLOAT3>& vertices);
 		};
 	}
 }
