@@ -811,3 +811,71 @@ engine::string engine::gl(std::source_location sl)
     return temp;
 #endif
 }
+
+std::vector<DirectX::XMFLOAT3> engine::x_move(float x, const std::vector<DirectX::XMFLOAT3>& v)
+{
+    std::vector<DirectX::XMFLOAT3> result;
+    result.reserve(v.size());
+    for (const auto& pos : v) {
+        result.emplace_back(pos.x + x, pos.y, pos.z);
+    }
+    return result;
+}
+
+std::vector<DirectX::XMFLOAT3> engine::y_move(float y, const std::vector<DirectX::XMFLOAT3>& v)
+{
+    std::vector<DirectX::XMFLOAT3> result;
+    result.reserve(v.size());
+    for (const auto& pos : v) {
+        result.emplace_back(pos.x, pos.y + y, pos.z);
+    }
+    return result;
+}
+
+std::vector<DirectX::XMFLOAT3> engine::z_move(float z, const std::vector<DirectX::XMFLOAT3>& v)
+{
+    std::vector<DirectX::XMFLOAT3> result;
+    result.reserve(v.size());
+    for (const auto& pos : v) {
+        result.emplace_back(pos.x, pos.y, pos.z + z);
+    }
+    return result;
+}
+
+std::vector<DirectX::XMFLOAT3> engine::move(DirectX::XMFLOAT3 direction, const std::vector<DirectX::XMFLOAT3>& vertices)
+{
+    std::vector<DirectX::XMFLOAT3> result;
+    result.reserve(vertices.size());
+    for (const auto& pos : vertices) {
+        result.emplace_back(pos.x + direction.x, pos.y + direction.y, pos.z + direction.z);
+    }
+    return result;
+}
+
+bool engine::mouse_collide(float x, float y, const std::vector<DirectX::XMFLOAT3>& vertices)
+{
+    for (const auto& pos : vertices) {
+        if (pos.x == x and pos.y == y) {
+            return true;
+        }
+    }
+    return false;
+}
+
+UINT engine::get_window_width(HWND handle)
+{
+    RECT window_rect;
+    if (GetClientRect(handle, &window_rect) == FALSE) {
+        throw ee(codes::client_rect_fail, client_rect_fail_description);
+    }
+    return window_rect.right - window_rect.left;
+}
+
+UINT engine::get_window_height(HWND handle)
+{
+    RECT window_rect;
+    if (GetClientRect(handle, &window_rect) == FALSE) {
+        throw ee(codes::client_rect_fail, client_rect_fail_description);
+    }
+    return window_rect.bottom - window_rect.top;
+}

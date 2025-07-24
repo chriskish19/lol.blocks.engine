@@ -17,5 +17,7 @@ namespace engine {
 		default_match_code,
 		pointer_is_nullptr,
 		dx_error,
+		client_rect_fail,
+
 	};
 }

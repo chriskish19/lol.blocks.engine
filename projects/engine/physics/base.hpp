@@ -25,12 +25,6 @@ namespace engine {
 			float m_force = 0.0f;
 			float m_acceleration = 0.0f;
 			float m_velocity = 0.0f;
-
-			std::vector<DirectX::XMFLOAT3> x_move(float x, const std::vector<DirectX::XMFLOAT3>& v);
-			std::vector<DirectX::XMFLOAT3> y_move(float y, const std::vector<DirectX::XMFLOAT3>& v);
-			std::vector<DirectX::XMFLOAT3> z_move(float z, const std::vector<DirectX::XMFLOAT3>& v);
-
-			std::vector<DirectX::XMFLOAT3> move(DirectX::XMFLOAT3 direction, const std::vector<DirectX::XMFLOAT3>& vertices);
 		};
 	}
 }

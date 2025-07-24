@@ -64,7 +64,7 @@ namespace core {
 		HWND m_handle = nullptr;
 
 		// class member function window procedure
-		LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+		virtual LRESULT CALLBACK this_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 
 		window_description m_wd = {
@@ -97,6 +97,5 @@ namespace core {
 		   ROS("StandardWindow"),
 		   LoadIcon(nullptr, IDI_APPLICATION)
 		};
-
 	};
 }

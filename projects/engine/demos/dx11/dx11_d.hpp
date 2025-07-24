@@ -258,7 +258,7 @@ namespace engine {
 
 
 
-		class ENGINE_API cube_demo {
+		class ENGINE_API cube_demo{
 		public:
 			cube_demo(HWND handle, UINT width, UINT height);
 			~cube_demo();
@@ -340,6 +340,10 @@ namespace engine {
 			std::unique_ptr<DirectX::CommonStates> m_common_states;
 
 			ID3D11DepthStencilView* m_p_dsv = nullptr;
+
+			UINT m_width;
+			UINT m_height;
+			HWND m_handle;
 		};
 
 		class ENGINE_API cube_physics : public cube_demo , public physics{

@@ -1673,6 +1673,7 @@ void engine::dx11::camera_demo::render()
 }
 
 engine::dx11::cube_demo::cube_demo(HWND handle, UINT width, UINT height)
+	:m_handle(handle),m_width(width),m_height(height)
 {
 	// init direct xtk
 	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
@@ -2152,45 +2153,77 @@ void engine::dx11::cube_demo::unload_content()
 
 void engine::dx11::cube_demo::update(float dt)
 {
-	// keyboard
+	// Keyboard
 	auto kb = m_kbd->GetState();
+	float moveStep = dt * moveSpeed;
 
-	// Move
-	if (kb.W)			m_cam.MoveForward(dt * moveSpeed);
-	if (kb.S)			m_cam.MoveForward(-dt * moveSpeed);
-	if (kb.A)			m_cam.MoveRight(-dt * moveSpeed);
-	if (kb.D)			m_cam.MoveRight(dt * moveSpeed);
-	if (kb.Space)		m_cam.MoveUp(dt * moveSpeed);
-	if (kb.LeftShift)	m_cam.MoveUp(-dt * moveSpeed);
+	// Movement
+	if (kb.W)            m_cam.MoveForward(moveStep);
+	if (kb.S)            m_cam.MoveForward(-moveStep);
+	if (kb.A)            m_cam.MoveRight(-moveStep);
+	if (kb.D)            m_cam.MoveRight(moveStep);
+	if (kb.Space)        m_cam.MoveUp(moveStep);
+	if (kb.LeftShift)    m_cam.MoveUp(-moveStep);
 
-	
-	if (kb.Q == true) {
+	// Switch mouse modes
+	if (kb.Q)
+	{
 		m_ms->SetMode(DirectX::Mouse::MODE_RELATIVE);
 	}
 
-	if (kb.Escape == true) {
+	if (kb.Escape)
+	{
 		m_ms->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 	}
 
-
 	m_cam.UpdateView();
 
-	// mouse
+	// Mouse
 	auto ms = m_ms->GetState();
+	float sensitivityX = static_cast<float>(ms.x) * sensitivity;
+	float sensitivityY = static_cast<float>(ms.y) * sensitivity;
 
-	float pd = static_cast<float>(ms.y) * sensitivity;
-	float yd = static_cast<float>(ms.x) * sensitivity;
+	// Handle camera rotation in RELATIVE mode
+	if (ms.positionMode == DirectX::Mouse::MODE_RELATIVE && ms.rightButton)
+	{
+		m_cam.Rotate(-sensitivityY, sensitivityX);
+	}
 
-	if (ms.rightButton) m_cam.Rotate(-pd, yd);
+	// ---- Virtual cursor for RELATIVE mode ----
+	static int virtualMouseX = m_width / 2;  // Start at center
+	static int virtualMouseY = m_height /2;
+	const int windowWidth = m_width;     
+	const int windowHeight = m_height;    
 
+	if (ms.positionMode == DirectX::Mouse::MODE_RELATIVE)
+	{
+		virtualMouseX += ms.x;
+		virtualMouseY += ms.y;
+		virtualMouseX = std::clamp(virtualMouseX, 0, windowWidth - 1);
+		virtualMouseY = std::clamp(virtualMouseY, 0, windowHeight - 1);
+	}
+	else
+	{
+		virtualMouseX = ms.x;
+		virtualMouseY = ms.y;
+	}
 
-	m_rotationAngle += dt;  // Rotate 1 radian per second (adjust speed here)
+	// Left button picking
+	if (ms.leftButton)
+	{
+		if (mouse_collide(virtualMouseX, virtualMouseY, m_cube_vertices))
+		{
+			m_cube_vertices = x_move(dt * 1.05f, m_cube_vertices);
+		}
+	}
 
+	// Cube rotation
+	m_rotationAngle += dt;  // Rotate 1 radian per second
 	if (m_rotationAngle > DirectX::XM_2PI)
 		m_rotationAngle -= DirectX::XM_2PI;
 
 	m_timeData.gTime += dt;
-	
+
 }
 
 void engine::dx11::cube_demo::render()
@@ -2250,9 +2283,6 @@ void engine::dx11::cube_demo::render()
 void engine::dx11::cube_physics::update(float dt) {
 	cube_demo::update(dt);
 
-	m_cube_vertices = x_move(dt * 0.05f, m_cube_vertices);
-
-	// Assume m_pVertexBuffer is your ID3D11Buffer* created as D3D11_USAGE_DYNAMIC
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	HRESULT hr = m_p_dd->pImmediateContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (SUCCEEDED(hr))
